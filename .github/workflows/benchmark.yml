@@ -30,6 +30,8 @@ jobs:
       # Benchmark 1: Clean build with cache uploads
       - name: Benchmark clean build with cache uploads
         working-directory: xcode_project_with_cache
+        env:
+          TUIST_CONFIG_TOKEN: ${{ secrets.TUIST_CAS_STAGING_TOKEN }}
         run: |
           hyperfine --warmup 1 --runs 3 \
             --prepare 'rm -rf ~/Library/Developer/Xcode/DerivedData && tuist clean --remote' \
@@ -39,6 +41,8 @@ jobs:
       # Benchmark 2: Clean build with pre-warmed cache
       - name: Benchmark clean build with pre-warmed cache
         working-directory: xcode_project_with_cache
+        env:
+          TUIST_CONFIG_TOKEN: ${{ secrets.TUIST_CAS_STAGING_TOKEN }}
         run: |
           hyperfine --warmup 1 --runs 3 \
             --setup 'tuist clean --remote && xcodebuild -project App.xcodeproj -scheme App -destination "platform=iOS Simulator,name=iPhone 17" build' \
@@ -49,6 +53,8 @@ jobs:
       # Benchmark 3: Clean build without caching
       - name: Benchmark clean build without caching
         working-directory: xcode_project_with_cache
+        env:
+          TUIST_CONFIG_TOKEN: ${{ secrets.TUIST_CAS_STAGING_TOKEN }}
         run: |
           hyperfine --warmup 1 --runs 3 \
             --prepare 'rm -rf ~/Library/Developer/Xcode/DerivedData' \
@@ -58,6 +64,8 @@ jobs:
       # Benchmark 3: Clean build with local caching
       - name: Benchmark clean build without caching
         working-directory: xcode_project_with_cache
+        env:
+          TUIST_CONFIG_TOKEN: ${{ secrets.TUIST_CAS_STAGING_TOKEN }}
         run: |
           hyperfine --warmup 1 --runs 3 \
             --setup 'rm -rf ~/Library/Developer/Xcode/DerivedData' \

@@ -24,7 +24,7 @@ jobs:
       - name: Setup Tuist Cache
         working-directory: xcode_project_with_cache
         env:
-          TUIST_CONFIG_TOKEN: ${{ secrets.TUIST_XCODE_PROJECT_WITH_CACHE_STAGING_TOKEN }}
+          TUIST_CONFIG_TOKEN: ${{ secrets.TUIST_CAS_STAGING_TOKEN }}
         run: tuist setup cache
 
       # Benchmark 1: Clean build with cache uploads

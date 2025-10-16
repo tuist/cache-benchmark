@@ -1,0 +1,3 @@
+[tools]
+tuist = "4.87.0"
+hyperfine = "1.19.0"

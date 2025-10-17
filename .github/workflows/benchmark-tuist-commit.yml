@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       tuist_commit:
-        description: 'Tuist commit SHA to build and benchmark'
+        description: "Tuist commit SHA to build and benchmark"
         required: true
         type: string
 
@@ -32,11 +32,11 @@ jobs:
           repository: tuist/tuist
           ref: ${{ github.event.inputs.tuist_commit }}
           path: tuist-build
-      
+
       - name: Build Tuist
         working-directory: tuist-build
-        run: swift build -c release
-      
+        run: swift build -c release --product tuist
+
       - name: Copy Built Executable
         run: |
           cp tuist-build/.build/release/tuist ./tuist-built

@@ -70,7 +70,7 @@ jobs:
   benchmark-mastodon-ios:
     name: Benchmark Mastodon iOS
     runs-on: namespace-profile-default-macos
-    timeout-minutes: 20
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
       - uses: jdx/mise-action@v2
@@ -93,7 +93,7 @@ jobs:
       - name: Benchmark clean build with cache uploads
         working-directory: mastodon-ios
         run: |
-          hyperfine --warmup 1 --runs 5 \
+          hyperfine --warmup 1 --runs 3 \
             --prepare 'rm -rf ~/Library/Developer/Xcode/DerivedData && ../tuist-setup-temp-project' \
             'HANDLE="$(cat .tuist-temp-org)_$(cat .tuist-temp-project)" && xcodebuild -project Mastodon.xcodeproj -scheme Mastodon -destination "platform=iOS Simulator,name=iPhone 17" build COMPILATION_CACHE_REMOTE_SERVICE_PATH="$HOME/.local/state/tuist/$HANDLE.sock"' \
             --conclude '../tuist-cleanup-temp-project' \
@@ -103,7 +103,7 @@ jobs:
       - name: Benchmark clean build with pre-warmed cache
         working-directory: mastodon-ios
         run: |
-          hyperfine --warmup 1 --runs 5 \
+          hyperfine --warmup 1 --runs 3 \
             --setup 'xcodebuild -project Mastodon.xcodeproj -scheme Mastodon -destination "platform=iOS Simulator,name=iPhone 17" build' \
             --prepare 'rm -rf ~/Library/Developer/Xcode/DerivedData' \
             'xcodebuild -project Mastodon.xcodeproj -scheme Mastodon -destination "platform=iOS Simulator,name=iPhone 17" build' \
@@ -113,7 +113,7 @@ jobs:
       - name: Benchmark clean build without caching
         working-directory: mastodon-ios
         run: |
-          hyperfine --warmup 1 --runs 5 \
+          hyperfine --warmup 1 --runs 3 \
             --prepare 'rm -rf ~/Library/Developer/Xcode/DerivedData' \
             'xcodebuild -project Mastodon.xcodeproj -scheme Mastodon -destination "platform=iOS Simulator,name=iPhone 17" build COMPILATION_CACHE_ENABLE_CACHING=NO' \
             --show-output
@@ -122,7 +122,7 @@ jobs:
       - name: Benchmark clean build with local caching
         working-directory: mastodon-ios
         run: |
-          hyperfine --warmup 1 --runs 5 \
+          hyperfine --warmup 1 --runs 3 \
             --setup 'rm -rf ~/Library/Developer/Xcode/DerivedData' \
             --prepare 'xcodebuild -project Mastodon.xcodeproj -scheme Mastodon -destination "platform=iOS Simulator,name=iPhone 17" clean' \
             'xcodebuild -project Mastodon.xcodeproj -scheme Mastodon -destination "platform=iOS Simulator,name=iPhone 17" build COMPILATION_CACHE_ENABLE_PLUGIN=NO' \

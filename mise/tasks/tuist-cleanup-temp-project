@@ -1,6 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
+TUIST_URL="https://canary.tuist.dev"
+
 # Read the temporary org name
 if [ -f .tuist-temp-org ]; then
     ORG_NAME=$(cat .tuist-temp-org)

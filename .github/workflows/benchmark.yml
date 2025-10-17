@@ -34,8 +34,8 @@ jobs:
         working-directory: xcode_project_with_cache
         run: |
           hyperfine --warmup 1 --runs 3 \
-            --prepare 'rm -rf ~/Library/Developer/Xcode/DerivedData && mise run tuist-setup-temp-project' \
-            --conclude 'mise run tuist-cleanup-temp-project' \
+            --prepare 'rm -rf ~/Library/Developer/Xcode/DerivedData && ../tuist-setup-temp-project' \
+            --conclude '../tuist-cleanup-temp-project' \
             'xcodebuild -project App.xcodeproj -scheme App -destination "platform=iOS Simulator,name=iPhone 17" build' \
             --show-output
 
@@ -44,9 +44,9 @@ jobs:
         working-directory: xcode_project_with_cache
         run: |
           hyperfine --warmup 1 --runs 3 \
-            --setup 'mise run tuist-setup-temp-project && xcodebuild -project App.xcodeproj -scheme App -destination "platform=iOS Simulator,name=iPhone 17" build' \
+            --setup '../tuist-setup-temp-project && xcodebuild -project App.xcodeproj -scheme App -destination "platform=iOS Simulator,name=iPhone 17" build' \
             --prepare 'rm -rf ~/Library/Developer/Xcode/DerivedData' \
-            --conclude 'mise run tuist-cleanup-temp-project' \
+            --conclude '../tuist-cleanup-temp-project' \
             'xcodebuild -project App.xcodeproj -scheme App -destination "platform=iOS Simulator,name=iPhone 17" build' \
             --show-output
 

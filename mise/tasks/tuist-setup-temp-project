@@ -4,6 +4,7 @@ set -euo pipefail
 # Generate random strings for org and project names
 ORG_NAME="org-$(openssl rand -hex 4)"
 PROJECT_NAME="project-$(openssl rand -hex 4)"
+CI="false"
 
 echo "Creating temporary organization: $ORG_NAME"
 tuist organization create "$ORG_NAME"

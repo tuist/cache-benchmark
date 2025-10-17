@@ -25,7 +25,13 @@ struct StatefulCountedActionButton: View {
         let count: Int?
         let isSelected: AsyncBool
     }
+    enum LayoutSize {
+        case adaptive
+        case forceSmall
+    }
     let type: PostAction
+    let layoutSize: LayoutSize
+    let showCountLabel: Bool
     let actionState: ActionState
     let doAction: (()->())?
     
@@ -34,31 +40,43 @@ struct StatefulCountedActionButton: View {
     var body: some View {
         Button(action: { doAction?() }) {
             HStack(spacing: 4) {
-                switch actionState.isSelected {
-                case .isFalse, .isTrue:
-                    Image(systemName: iconName)
-                        .font(iconFont)
-                case .fetching, .settingToFalse, .settingToTrue:
-                    ProgressView()
-                        .progressViewStyle(.circular)
-                        .font(iconFont)
-                case .unknown:
-                    Image(systemName: "questionmark")
-                        .font(iconFont)
-                }
-                ZStack(alignment: .leading) {
-                    Text("0000")         // to keep the required space
-                        .fontWeight(.semibold)
-                        .hidden()
-                    Text(countLabel ?? "")
-                        .contentTransition(.numericText(value: Double(actionState.count ?? 0)))
-                }
-                .font(.footnote)
+                imageComponent
+                countLabelComponent
             }
-            .fontWeight(actionState.isSelected == .isTrue ? .semibold : .regular)
-            .foregroundStyle(color)
         }
         .buttonStyle(.borderless) // Without this, all the buttons in the row activate when one is tapped.  What a remarkably unexpected result with no documentation.
+        .fontWeight(actionState.isSelected == .isTrue ? .semibold : .regular)
+        .foregroundStyle(color)
+        .contentShape(Rectangle())
+    }
+    
+    @ViewBuilder var imageComponent: some View {
+        ZStack (alignment: .top) {
+            // The actual image to display
+            switch actionState.isSelected {
+            case .isFalse, .isTrue:
+                Image(systemName: iconName)
+            case .fetching, .settingToFalse, .settingToTrue:
+                ProgressView()
+                    .progressViewStyle(.circular)
+            case .unknown:
+                Image(systemName: "questionmark")
+            }
+        }
+        .font(iconFont)
+    }
+    
+    @ViewBuilder var countLabelComponent: some View {
+        ZStack(alignment: .leading) {
+            Text("0000")         // to keep the required space
+                .fontWeight(.semibold)
+                .lineLimit(1)
+                .hidden()
+            Text(countLabel ?? "")
+                .lineLimit(1)
+                .contentTransition(.numericText(value: Double(actionState.count ?? 0)))
+        }
+        .font(layoutSize == .adaptive ? .footnote : Font.system(size: 13))
     }
     
     private var iconName: String {

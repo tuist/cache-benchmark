@@ -17,13 +17,9 @@ extension DataSourceFacade {
         tag: Mastodon.Entity.Tag
     ) async {
         guard let authBox = AuthenticationServiceProvider.shared.currentActiveUser.value else { return }
-        let hashtagTimelineViewModel = HashtagTimelineViewModel(
-            authenticationBox: authBox,
-            hashtag: tag.name
-        )
         guard let coordinator = provider.sceneCoordinator else { return }
         _ = coordinator.present(
-            scene: .hashtagTimeline(viewModel: hashtagTimelineViewModel),
+            scene: .hashtagTimeline(tag),
             from: provider,
             transition: .show
         )

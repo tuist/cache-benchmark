@@ -68,9 +68,6 @@ class MainTabBarController: UITabBarController {
         meProfileViewController.configureTabBarItem(with: .me)
 
         if let authenticationBox {
-            if let homeTimelineViewController = homeTimelineViewController as? HomeTimelineViewController {
-                homeTimelineViewController.viewModel = HomeTimelineViewModel(authenticationBox: authenticationBox)
-            }
             searchViewController.viewModel = SearchViewModel(authenticationBox: authenticationBox)
         }
 
@@ -84,6 +81,7 @@ class MainTabBarController: UITabBarController {
         }
 
         layoutAvatarButton()
+        updateProfileTabA11y()
     }
     
     private func replace(_ oldVC: UIViewController, with newVC: UIViewController) {
@@ -277,6 +275,15 @@ extension MainTabBarController {
 }
 
 extension MainTabBarController {
+    func updateProfileTabA11y() {
+        guard let authBox = authenticationBox, let account = authBox.cachedAccount else { return }
+        let _profileTabItem = self.tabBar.items?.first { item in item.tag == Tab.me.tag }
+        guard let profileTabItem = _profileTabItem else { return }
+        profileTabItem.accessibilityHint = L10n.Scene.AccountList.tabBarHint(account.displayNameWithFallback)
+    }
+}
+
+extension MainTabBarController {
     
     @objc private func composeButtonDidPressed(_ sender: Any) {
 
@@ -314,6 +321,8 @@ extension MainTabBarController {
             assert(Thread.isMainThread)
             // double tapping search tab opens the search bar without additional taps
             searchViewController.searchBar.becomeFirstResponder()
+        case .home:
+            (homeTimelineViewController as? TimelineListViewController)?.scrollToTop()
         default:
             break
         }
@@ -533,7 +542,19 @@ extension MainTabBarController {
             }
             
             // show favorites
-            if !(self.topMost is FavoriteViewController) {
+            let includeShowFavoritesCommand = {
+                if let topTimeline = self.topMost as? TimelineListViewController {
+                    switch topTimeline.type {
+                    case .myFavorites:
+                        false
+                    default:
+                        true
+                    }
+                } else {
+                    true
+                }
+            }()
+            if includeShowFavoritesCommand {
                 commands.append(showFavoritesKeyCommand)
             }
             
@@ -564,9 +585,14 @@ extension MainTabBarController {
                 if navigationController.viewControllers.count > 1 {
                     // pop to top when previous tab position already is home
                     navigationController.popToRootViewController(animated: true)
-                } else if let homeTimelineViewController = topMost as? HomeTimelineViewController {
-                    // trigger scrollToTop if topMost is home timeline
-                    homeTimelineViewController.scrollToTop(animated: true)
+                } else if let timelineViewController = topMost as? TimelineListViewController {
+                    switch timelineViewController.type {
+                    case .home:
+                        // trigger scrollToTop if topMost is already the home timeline
+                        timelineViewController.scrollToTop()
+                    default:
+                        break
+                    }
                 }
             default:
                 break

@@ -180,7 +180,7 @@ extension SceneCoordinator {
         case editHistory(viewModel: StatusEditHistoryViewModel)
         
         // Hashtag Timeline
-        case hashtagTimeline(viewModel: HashtagTimelineViewModel)
+        case hashtagTimeline(Mastodon.Entity.Tag)
 
         // profile
         case accountList(viewModel: AccountListViewModel)
@@ -192,7 +192,7 @@ extension SceneCoordinator {
         case rebloggedBy(viewModel: UserListViewModel)
         case favoritedBy(viewModel: UserListViewModel)
         case bookmark(viewModel: BookmarkViewModel)
-        case followedTags(viewModel: FollowedTagsViewModel)
+        case followedTags
 
         // setting
         case settings(setting: Setting)
@@ -422,13 +422,7 @@ private extension SceneCoordinator {
             _viewController.viewModel = viewModel
             viewController = _viewController
         case .searchResult(let viewModel):
-            if viewModel.searchScope == .posts {
-                viewController = TimelineListViewController(.searchPosts(viewModel.searchText))
-            } else {
-                let searchResultViewController = SearchResultViewController()
-                searchResultViewController.viewModel = viewModel
-                viewController = searchResultViewController
-            }
+            viewController = TimelineListViewController(.search(viewModel.searchText, scope: viewModel.searchScope))
         case .compose(let viewModel):
             let _viewController = ComposeViewController(viewModel: viewModel)
             viewController = _viewController
@@ -442,9 +436,8 @@ private extension SceneCoordinator {
         case .editHistory(let viewModel):
             let editHistoryViewController = StatusEditHistoryViewController(viewModel: viewModel)
             viewController = editHistoryViewController
-        case .hashtagTimeline(let viewModel):
-            let _viewController = HashtagTimelineViewController()
-            _viewController.viewModel = viewModel
+        case .hashtagTimeline(let tag):
+            let _viewController = TimelineListViewController(.hashtag(tag))
             viewController = _viewController
         case .accountList(let viewModel):
             let accountListViewController = AccountListViewController()
@@ -455,10 +448,8 @@ private extension SceneCoordinator {
             viewController = _viewController
         case .bookmark(let viewModel):
             viewController = TimelineListViewController(.myBookmarks)
-        case .followedTags(let viewModel):
-            guard let authenticationBox else { return nil }
-            
-            viewController = FollowedTagsViewController(authenticationBox: authenticationBox, viewModel: viewModel)
+        case .followedTags:
+            viewController = TimelineListViewController(.myFollowedHashtags)
         case .favorite(let viewModel):
             viewController = TimelineListViewController(.myFavorites)
         case .follower(let viewModel):

@@ -23,6 +23,7 @@
                     "more_than_one_video": "Cannot attach more than one video."
                 }
             },
+            "generic_error": "Error",
             "edit_profile_failure": {
                 "title": "Edit Profile Error",
                 "message": "Cannot edit profile. Please try again."
@@ -37,8 +38,8 @@
                 "block_entire_domain": "Block Domain"
             },
             "confirm_remove_quote": {
-                "title": "Remove Quote",
-                "message": "Are you sure you want to withdraw your quote from %@'s post? It will be replaced by a message indicating your removal wherever this post appears. This action cannot be undone."
+                "title": "Remove quoted post?",
+                "message": "Your post will be replaced with the text 'Post removed by author'. This action cannot be undone."
             },
             "save_photo_failure": {
                 "title": "Save Photo Failure",
@@ -90,7 +91,7 @@
                 "previous": "Previous",
                 "open": "Open",
                 "add": "Add",
-                "removeQuote": "Remove my quote",
+                "removeQuote": "Remove my post",
                 "remove": "Remove",
                 "edit": "Edit",
                 "save": "Save",
@@ -132,7 +133,9 @@
                 "bookmark": "Bookmark",
                 "remove_bookmark": "Remove Bookmark",
                 "follow": "Follow %s",
-                "unfollow": "Unfollow %s"
+                "unfollow": "Unfollow %s",
+                "load_newer": "Load newer posts",
+                "load_older": "Load older posts"
             },
             "tabs": {
                 "home": "Home",
@@ -186,13 +189,16 @@
                 "tap_to_reveal": "Tap to reveal",
                 "load_embed": "Load Embed",
                 "link_via_user": "%s via %s",
+                "link_a11y_label": "Link:",
                 "poll": {
                     "vote": "Vote",
                     "voted": "Voted",
                     "closed": "Closed",
                     "see_results": "See Results",
                     "hide_results": "Hide Results",
-                    "choose_one_or_more": "Choose one or more"
+                    "choose_one_or_more": "Choose one or more",
+                    "multiselect_a11y_hint": "Select one or more",
+                    "single_select_a11y_hint": "Select one"
                 },
                 "meta_entity": {
                     "url": "Link: %s",
@@ -216,7 +222,8 @@
                     "tap_then_hold_to_show_menu": "Tap then hold to show menu",
                     "a11y_labels": {
                         "reblog": "Boost",
-                        "unreblog": "Undo boost"
+                        "unreblog": "Undo boost",
+                        "bookmarked": "Bookmarked"
                     },
                     "copy_link": "Copy Link"
                 },
@@ -265,9 +272,11 @@
                     "by_author": "By %s"
                 },
                 "quote": {
+                    "a11y_label" : "Quoted:",
                     "pending" : "Post pending",
                     "removed_by_author" : "Post removed by author",
                     "unavailable" : "Post unavailable",
+                    "hidden_by_filter" : "Hidden due to one of your filters",
                     "pending_explanation_message" : "On Mastodon, you can control whether someone can quote you. This post is pending while we’re getting the original author’s approval."
                 }
             },
@@ -1001,8 +1010,17 @@
                     "private_and_restricted": "Private & Restricted",
                     "custom": "Custom"
                 },
-                "default_post_visibility": {
-                    "title": "Default Post Visibility"
+                "posting_defaults": {
+                    "title": "Posting defaults",
+                    "subtitle": "These settings will be used as defaults when you create new posts, but you can edit them per post within the composer.",
+                    "visibility_title": "Post Visibility",
+                    "public_hint": "Anyone on and off Mastodon",
+                    "quiet_public_hint": "Hidden from Mastodon search results, trending, and public timelines",
+                    "followers_only_hint": "Only your followers",
+                    "private_mention_hint": "Everyone mentioned in the post",
+                    "quiet_public_quotability_hint": "When people quote you, their post will also be hidden from trending timelines.",
+                    "followers_only_quotability_hint": "Followers-only posts authored on Mastodon can’t be quoted by others.",
+                    "private_mention_quotability_hint": "Private mentions authored on Mastodon can’t be quoted by others."
                 },
                 "manually_approve_follow_requests": "Manually Approve Follow Requests",
                 "show_followers_and_following": "Show Followers & Following",
@@ -1077,7 +1095,7 @@
             }
         },
         "account_list": {
-            "tab_bar_hint": "Current selected profile: %s. Double tap then hold to show account switcher",
+            "tab_bar_hint": "Current selected profile: %s. Triple tap to show account switcher",
             "dismiss_account_switcher": "Dismiss Account Switcher",
             "add_account": "Add Account",
             "logout_all_accounts": "Log Out Of All Accounts",

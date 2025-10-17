@@ -12,6 +12,8 @@ import Foundation
 public enum L10n {
   public enum Common {
     public enum Alerts {
+      /// Error
+      public static let genericError = L10n.tr("Localizable", "Common.Alerts.GenericError", fallback: "Error")
       public enum BlockDomain {
         /// Block Domain
         public static let blockEntireDomain = L10n.tr("Localizable", "Common.Alerts.BlockDomain.BlockEntireDomain", fallback: "Block Domain")
@@ -47,12 +49,10 @@ public enum L10n {
         public static let pleaseTryAgainLater = L10n.tr("Localizable", "Common.Alerts.Common.PleaseTryAgainLater", fallback: "Please try again later.")
       }
       public enum ConfirmRemoveQuote {
-        /// Are you sure you want to withdraw your quote from %@'s post? It will be replaced by a message indicating your removal wherever this post appears. This action cannot be undone.
-        public static func message(_ p1: Any) -> String {
-          return L10n.tr("Localizable", "Common.Alerts.ConfirmRemoveQuote.Message", String(describing: p1), fallback: "Are you sure you want to withdraw your quote from %@'s post? It will be replaced by a message indicating your removal wherever this post appears. This action cannot be undone.")
-        }
-        /// Remove Quote
-        public static let title = L10n.tr("Localizable", "Common.Alerts.ConfirmRemoveQuote.Title", fallback: "Remove Quote")
+        /// Your post will be replaced with the text 'Post removed by author'. This action can not be undone.
+        public static let message = L10n.tr("Localizable", "Common.Alerts.ConfirmRemoveQuote.Message", fallback: "Your post will be replaced with the text 'Post removed by author'. This action can not be undone.")
+        /// Remove quoted post?
+        public static let title = L10n.tr("Localizable", "Common.Alerts.ConfirmRemoveQuote.Title", fallback: "Remove quoted post?")
       }
       public enum DeletePost {
         /// Are you sure you want to delete this post?
@@ -193,6 +193,10 @@ public enum L10n {
         public static func follow(_ p1: Any) -> String {
           return L10n.tr("Localizable", "Common.Controls.Actions.Follow", String(describing: p1), fallback: "Follow %@")
         }
+        /// Load newer posts
+        public static let loadNewer = L10n.tr("Localizable", "Common.Controls.Actions.LoadNewer", fallback: "Load newer posts")
+        /// Load older posts
+        public static let loadOlder = L10n.tr("Localizable", "Common.Controls.Actions.LoadOlder", fallback: "Load older posts")
         /// Manually search instead
         public static let manuallySearch = L10n.tr("Localizable", "Common.Controls.Actions.ManuallySearch", fallback: "Manually search instead")
         /// Next
@@ -213,8 +217,8 @@ public enum L10n {
         public static let remove = L10n.tr("Localizable", "Common.Controls.Actions.Remove", fallback: "Remove")
         /// Remove Bookmark
         public static let removeBookmark = L10n.tr("Localizable", "Common.Controls.Actions.RemoveBookmark", fallback: "Remove Bookmark")
-        /// Remove my quote
-        public static let removeQuote = L10n.tr("Localizable", "Common.Controls.Actions.RemoveQuote", fallback: "Remove my quote")
+        /// Remove my post
+        public static let removeQuote = L10n.tr("Localizable", "Common.Controls.Actions.RemoveQuote", fallback: "Remove my post")
         /// Reply
         public static let reply = L10n.tr("Localizable", "Common.Controls.Actions.Reply", fallback: "Reply")
         /// Report %@
@@ -365,6 +369,8 @@ public enum L10n {
         public static func editedAtTimestampPrefix(_ p1: Any) -> String {
           return L10n.tr("Localizable", "Common.Controls.Status.EditedAtTimestampPrefix", String(describing: p1), fallback: "Edited %@")
         }
+        /// Link:
+        public static let linkA11yLabel = L10n.tr("Localizable", "Common.Controls.Status.LinkA11yLabel", fallback: "Link:")
         /// %@ via %@
         public static func linkViaUser(_ p1: Any, _ p2: Any) -> String {
           return L10n.tr("Localizable", "Common.Controls.Status.LinkViaUser", String(describing: p1), String(describing: p2), fallback: "%@ via %@")
@@ -439,6 +445,8 @@ public enum L10n {
           /// Undo boost
           public static let unreblog = L10n.tr("Localizable", "Common.Controls.Status.Actions.Unreblog", fallback: "Undo boost")
           public enum A11YLabels {
+            /// Bookmarked
+            public static let bookmarked = L10n.tr("Localizable", "Common.Controls.Status.Actions.A11YLabels.Bookmarked", fallback: "Bookmarked")
             /// Boost
             public static let reblog = L10n.tr("Localizable", "Common.Controls.Status.Actions.A11YLabels.Reblog", fallback: "Boost")
             /// Undo boost
@@ -514,14 +522,22 @@ public enum L10n {
           public static let closed = L10n.tr("Localizable", "Common.Controls.Status.Poll.Closed", fallback: "Closed")
           /// Hide Results
           public static let hideResults = L10n.tr("Localizable", "Common.Controls.Status.Poll.HideResults", fallback: "Hide Results")
+          /// Select one or more
+          public static let multiselectA11yHint = L10n.tr("Localizable", "Common.Controls.Status.Poll.MultiselectA11yHint", fallback: "Select one or more")
           /// See Results
           public static let seeResults = L10n.tr("Localizable", "Common.Controls.Status.Poll.SeeResults", fallback: "See Results")
+          /// Select one
+          public static let singleSelectA11yHint = L10n.tr("Localizable", "Common.Controls.Status.Poll.SingleSelectA11yHint", fallback: "Select one")
           /// Vote
           public static let vote = L10n.tr("Localizable", "Common.Controls.Status.Poll.Vote", fallback: "Vote")
           /// Voted
           public static let voted = L10n.tr("Localizable", "Common.Controls.Status.Poll.Voted", fallback: "Voted")
         }
         public enum Quote {
+          /// Quoted:
+          public static let a11yLabel = L10n.tr("Localizable", "Common.Controls.Status.Quote.A11yLabel", fallback: "Quoted:")
+          /// Hidden due to one of your filters
+          public static let hiddenByFilter = L10n.tr("Localizable", "Common.Controls.Status.Quote.HiddenByFilter", fallback: "Hidden due to one of your filters")
           /// Post pending
           public static let pending = L10n.tr("Localizable", "Common.Controls.Status.Quote.Pending", fallback: "Post pending")
           /// On Mastodon, you can control whether someone can quote you. This post is pending while we’re getting the original author’s approval.
@@ -654,9 +670,9 @@ public enum L10n {
       public static let logout = L10n.tr("Localizable", "Scene.AccountList.Logout", fallback: "Logout")
       /// Log Out Of All Accounts
       public static let logoutAllAccounts = L10n.tr("Localizable", "Scene.AccountList.LogoutAllAccounts", fallback: "Log Out Of All Accounts")
-      /// Current selected profile: %@. Double tap then hold to show account switcher
+      /// Current selected profile: %@. Triple tap to show account switcher
       public static func tabBarHint(_ p1: Any) -> String {
-        return L10n.tr("Localizable", "Scene.AccountList.TabBarHint", String(describing: p1), fallback: "Current selected profile: %@. Double tap then hold to show account switcher")
+        return L10n.tr("Localizable", "Scene.AccountList.TabBarHint", String(describing: p1), fallback: "Current selected profile: %@. Triple tap to show account switcher")
       }
     }
     public enum Bookmark {
@@ -1992,9 +2008,27 @@ public enum L10n {
         public static let suggestMyAccountToOthers = L10n.tr("Localizable", "Scene.Settings.PrivacySafety.SuggestMyAccountToOthers", fallback: "Suggest My Account to Others")
         /// Privacy & Safety
         public static let title = L10n.tr("Localizable", "Scene.Settings.PrivacySafety.Title", fallback: "Privacy & Safety")
-        public enum DefaultPostVisibility {
-          /// Default Post Visibility
-          public static let title = L10n.tr("Localizable", "Scene.Settings.PrivacySafety.DefaultPostVisibility.Title", fallback: "Default Post Visibility")
+        public enum PostingDefaults {
+          /// Only your followers
+          public static let followersOnlyHint = L10n.tr("Localizable", "Scene.Settings.PrivacySafety.PostingDefaults.FollowersOnlyHint", fallback: "Only your followers")
+          /// Followers-only posts authored on Mastodon can’t be quoted by others.
+          public static let followersOnlyQuotabilityHint = L10n.tr("Localizable", "Scene.Settings.PrivacySafety.PostingDefaults.FollowersOnlyQuotabilityHint", fallback: "Followers-only posts authored on Mastodon can’t be quoted by others.")
+          /// Everyone mentioned in the post
+          public static let privateMentionHint = L10n.tr("Localizable", "Scene.Settings.PrivacySafety.PostingDefaults.PrivateMentionHint", fallback: "Everyone mentioned in the post")
+          /// Private mentions authored on Mastodon can’t be quoted by others.
+          public static let privateMentionQuotabilityHint = L10n.tr("Localizable", "Scene.Settings.PrivacySafety.PostingDefaults.PrivateMentionQuotabilityHint", fallback: "Private mentions authored on Mastodon can’t be quoted by others.")
+          /// Anyone on and off Mastodon
+          public static let publicHint = L10n.tr("Localizable", "Scene.Settings.PrivacySafety.PostingDefaults.PublicHint", fallback: "Anyone on and off Mastodon")
+          /// Hidden from Mastodon search results, trending, and public timelines
+          public static let quietPublicHint = L10n.tr("Localizable", "Scene.Settings.PrivacySafety.PostingDefaults.QuietPublicHint", fallback: "Hidden from Mastodon search results, trending, and public timelines")
+          /// When people quote you, their post will also be hidden from trending timelines.
+          public static let quietPublicQuotabilityHint = L10n.tr("Localizable", "Scene.Settings.PrivacySafety.PostingDefaults.QuietPublicQuotabilityHint", fallback: "When people quote you, their post will also be hidden from trending timelines.")
+          /// These settings will be used as defaults when you create new posts, but you can edit them per post within the composer.
+          public static let subtitle = L10n.tr("Localizable", "Scene.Settings.PrivacySafety.PostingDefaults.Subtitle", fallback: "These settings will be used as defaults when you create new posts, but you can edit them per post within the composer.")
+          /// Posting defaults
+          public static let title = L10n.tr("Localizable", "Scene.Settings.PrivacySafety.PostingDefaults.Title", fallback: "Posting defaults")
+          /// Post Visibility
+          public static let visibilityTitle = L10n.tr("Localizable", "Scene.Settings.PrivacySafety.PostingDefaults.VisibilityTitle", fallback: "Post Visibility")
         }
         public enum Preset {
           /// Custom
@@ -2342,6 +2376,14 @@ public enum L10n {
       /// Plural format key: "%#@voter_count@"
       public static func voter(_ p1: Int) -> String {
         return L10n.tr("Localizable", "plural.count.voter", p1, fallback: "Plural format key: \"%#@voter_count@\"")
+      }
+      /// Plural format key: "%#@count_others@"
+      public static func youAndOthersBoosted(_ p1: Int) -> String {
+        return L10n.tr("Localizable", "plural.count.you_and_others_boosted", p1, fallback: "Plural format key: \"%#@count_others@\"")
+      }
+      /// Plural format key: "%#@count_others@"
+      public static func youAndOthersFavorited(_ p1: Int) -> String {
+        return L10n.tr("Localizable", "plural.count.you_and_others_favorited", p1, fallback: "Plural format key: \"%#@count_others@\"")
       }
     }
     public enum FilteredNotificationBanner {

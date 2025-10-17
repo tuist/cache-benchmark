@@ -148,6 +148,8 @@ public struct ComposeContentView: View {
                 if let quotedPostViewBuilder = viewModel.composeContext.quotingViewBuilder {
                     quotedPostViewBuilder()
                         .padding()
+                        .accessibilityElement(children: .contain)
+                        .accessibilityLabel(L10n.Common.Controls.Status.Quote.a11yLabel)
                 }
             }
             .background(
@@ -180,10 +182,11 @@ public struct ComposeContentView: View {
         } label: {
             HStack {
                 Text(Image(uiImage: interactionSettingsViewModel.interactionSettings.visibility.image))
+                    .accessibilityHidden(true)
                 Text(viewModel.interactionSettingsButtonText(interactionSettingsViewModel.interactionSettings))
             }
             .font(.subheadline)
-            .foregroundStyle(Asset.Colors.Brand.darkBlurple.swiftUIColor)
+            .foregroundStyle(Asset.Colors.accent.swiftUIColor)
             .padding(EdgeInsets(top: 7, leading: 14, bottom: 7, trailing: 14))
             .background() {
                 Capsule()

@@ -74,3 +74,60 @@ jobs:
             --setup 'rm -rf ~/Library/Developer/Xcode/DerivedData' \
             'xcodebuild -project App.xcodeproj -scheme App -destination "platform=iOS Simulator,name=iPhone 17" build COMPILATION_CACHE_ENABLE_PLUGIN=NO' \
             --show-output
+
+  benchmark-mastodon-ios:
+    name: Benchmark Mastodon iOS
+    runs-on: namespace-profile-default-macos
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: jdx/mise-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Authenticate Tuist
+        working-directory: mastodon-ios
+        run: TUIST_URL="https://canary.tuist.dev" tuist auth login --email tuistrocks@tuist.io --password ${{ secrets.TUIST_TEST_ACCOUNT_PASSWORD }}
+
+      - name: Setup Tuist Cache
+        working-directory: mastodon-ios
+        run: tuist setup cache
+
+      # Benchmark 1: Clean build with cache uploads
+      - name: Benchmark clean build with cache uploads
+        working-directory: mastodon-ios
+        run: |
+          hyperfine --warmup 1 --runs 5 \
+            --prepare 'rm -rf ~/Library/Developer/Xcode/DerivedData && ../tuist-setup-temp-project' \
+            --conclude '../tuist-cleanup-temp-project' \
+            'xcodebuild -project Mastodon.xcodeproj -scheme Mastodon -destination "platform=iOS Simulator,name=iPhone 17" build' \
+            --show-output
+
+      # Benchmark 2: Clean build with pre-warmed cache
+      - name: Benchmark clean build with pre-warmed cache
+        working-directory: mastodon-ios
+        run: |
+          hyperfine --warmup 1 --runs 5 \
+            --setup '../tuist-setup-temp-project && xcodebuild -project Mastodon.xcodeproj -scheme Mastodon -destination "platform=iOS Simulator,name=iPhone 17" build' \
+            --prepare 'rm -rf ~/Library/Developer/Xcode/DerivedData' \
+            --conclude '../tuist-cleanup-temp-project' \
+            'xcodebuild -project Mastodon.xcodeproj -scheme Mastodon -destination "platform=iOS Simulator,name=iPhone 17" build' \
+            --show-output
+
+      # Benchmark 3: Clean build without caching
+      - name: Benchmark clean build without caching
+        working-directory: mastodon-ios
+        run: |
+          hyperfine --warmup 1 --runs 5 \
+            --prepare 'rm -rf ~/Library/Developer/Xcode/DerivedData' \
+            'xcodebuild -project Mastodon.xcodeproj -scheme Mastodon -destination "platform=iOS Simulator,name=iPhone 17" build COMPILATION_CACHE_ENABLE_CACHING=NO' \
+            --show-output
+
+      # Benchmark 4: Clean build with local caching
+      - name: Benchmark clean build with local caching
+        working-directory: mastodon-ios
+        run: |
+          hyperfine --warmup 1 --runs 5 \
+            --setup 'rm -rf ~/Library/Developer/Xcode/DerivedData' \
+            'xcodebuild -project Mastodon.xcodeproj -scheme Mastodon -destination "platform=iOS Simulator,name=iPhone 17" build COMPILATION_CACHE_ENABLE_PLUGIN=NO' \
+            --show-output

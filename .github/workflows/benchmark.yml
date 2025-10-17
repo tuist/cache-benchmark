@@ -86,6 +86,7 @@ jobs:
         run: tuist setup cache
 
       - name: Setup Build Environment
+        working-directory: mastodon-ios
         run: exec ./.github/scripts/setup.sh
 
       # Benchmark 1: Clean build with cache uploads

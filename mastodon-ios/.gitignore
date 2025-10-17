@@ -131,7 +131,7 @@ env/**/**
 
 
 ## Ruby ###
-vendor/
+#vendor/
 .bundle/
 
 # IDEs

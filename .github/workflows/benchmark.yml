@@ -29,14 +29,16 @@ jobs:
         working-directory: xcode_project_with_cache
         run: tuist setup cache
 
-      # - name: Clone Tuist Repository
-      #   run: git clone https://github.com/tuist/tuist tuist
 
-      # - name: Setup Tuist Cache
-      #   working-directory: tuist
-      #   run: swift run tuist setup cache --path ../xcode_project_with_cache
+      - name: Benchmark clean build with cache uploads
+        working-directory: xcode_project_with_cache
+        run: |
+          hyperfine --warmup 1 --runs 10 \
+            --prepare 'rm -rf ~/Library/Developer/Xcode/DerivedData && ../tuist-setup-temp-project && tuist setup cache' \
+            --conclude '../tuist-cleanup-temp-project' \
+            'HANDLE="$(cat .tuist-temp-org)_$(cat .tuist-temp-project)" && xcodebuild -project App.xcodeproj -scheme App -destination "platform=iOS Simulator,name=iPhone 17" build COMPILATION_CACHE_REMOTE_SERVICE_PATH="$HOME/.local/state/tuist/$HANDLE.sock"' \
+            --show-output
 
-      # Benchmark 1: Clean build with cache uploads
       - name: Benchmark clean build with cache uploads
         working-directory: xcode_project_with_cache
         run: |

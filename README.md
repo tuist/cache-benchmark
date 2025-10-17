@@ -20,27 +20,38 @@ The GitHub Actions workflow runs the following benchmarks:
 
 #### Clean build with cache uploads (4.88.0)
 
+https://github.com/tuist/cache-benchmark/actions/runs/18592698275/job/53011177047#step:6:13371
+
 ```
-Time (mean ± σ): 5.654 s ± 0.554 s [User: 0.804 s, System: 0.333 s]
-Range (min … max): 4.985 s … 6.630 s 10 runs
+Time (mean ± σ):      5.787 s ±  0.933 s    [User: 0.949 s, System: 0.361 s]
+Range (min … max):    5.197 s …  8.263 s    10 runs
 ```
 
 #### Clean build with pre-warmed cache (4.88.0)
+
+https://github.com/tuist/cache-benchmark/actions/runs/18592698275/job/53011177047#step:7:14024
+
 ```
-Time (mean ± σ): 5.478 s ± 0.384 s [User: 0.795 s, System: 0.327 s]
-Range (min … max): 4.991 s … 6.130 s 10 runs
+Time (mean ± σ):      2.933 s ±  0.130 s    [User: 0.766 s, System: 0.304 s]
+Range (min … max):    2.792 s …  3.209 s    10 runs
 ```
 
 #### Clean build without caching
+
+https://github.com/tuist/cache-benchmark/actions/runs/18592698275/job/53011177047#step:8:4758
+
 ```
-Time (mean ± σ): 4.558 s ± 0.043 s [User: 0.701 s, System: 0.227 s]
-Range (min … max): 4.453 s … 4.615 s 10 runs
+Time (mean ± σ):      4.596 s ±  0.068 s    [User: 0.715 s, System: 0.229 s]
+Range (min … max):    4.454 s …  4.696 s    10 runs
 ```
 
 #### Clean build with local caching
+
+https://github.com/tuist/cache-benchmark/actions/runs/18592698275/job/53011177047#step:9:3968
+
 ```
-Time (mean ± σ): 1.241 s ± 0.021 s [User: 0.650 s, System: 0.171 s]
-Range (min … max): 1.214 s … 1.292 s 10 runs
+Time (mean ± σ):      1.835 s ±  0.104 s    [User: 0.683 s, System: 0.188 s]
+Range (min … max):    1.728 s …  2.118 s    10 runs
 ```
 
 ## Running Locally

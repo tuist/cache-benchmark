@@ -15,8 +15,6 @@ jobs:
     name: Benchmark Tuist Cache
     runs-on: namespace-profile-default-macos
     timeout-minutes: 20
-    env:
-      CI: "false"
     steps:
       - uses: actions/checkout@v4
       - uses: jdx/mise-action@v2
@@ -25,17 +23,17 @@ jobs:
 
       - name: Authenticate Tuist
         working-directory: xcode_project_with_cache
-        run: TUIST_URL="https://canary.tuist.dev" tuist auth login --email tuistrocks@tuist.io --password ${{ secrets.TUIST_TEST_ACCOUNT_PASSWORD }}
+        run: CI="false" TUIST_URL="https://canary.tuist.dev" tuist auth login --email tuistrocks@tuist.io --password ${{ secrets.TUIST_TEST_ACCOUNT_PASSWORD }}
 
       - name: Setup Tuist Cache
         working-directory: xcode_project_with_cache
-        run: tuist setup cache
+        run: CI="false" tuist setup cache
 
       # Benchmark 1: Clean build with cache uploads
       - name: Benchmark clean build with cache uploads
         working-directory: xcode_project_with_cache
         run: |
-          hyperfine --warmup 1 --runs 3 \
+          CI="false" hyperfine --warmup 1 --runs 3 \
             --prepare 'rm -rf ~/Library/Developer/Xcode/DerivedData && mise run tuist-setup-temp-project' \
             --conclude 'mise run tuist-cleanup-temp-project' \
             'xcodebuild -project App.xcodeproj -scheme App -destination "platform=iOS Simulator,name=iPhone 17" build' \

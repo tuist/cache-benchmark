@@ -23,7 +23,7 @@ jobs:
 
       - name: Authenticate Tuist
         working-directory: xcode_project_with_cache
-        run: CI=false TUIST_URL="https://canary.tuist.dev" tuist auth login --email tuistrocks@tuist.io --password ${{ secrets.TUIST_TEST_ACCOUNT_PASSWORD }}
+        run: CI=false GITHUB_RUN_ID= TUIST_URL="https://canary.tuist.dev" tuist auth login --email tuistrocks@tuist.io --password ${{ secrets.TUIST_TEST_ACCOUNT_PASSWORD }}
 
       - name: Setup Tuist Cache
         working-directory: xcode_project_with_cache

@@ -33,7 +33,7 @@ jobs:
       - name: Benchmark clean build with cache uploads
         working-directory: xcode_project_with_cache
         run: |
-          hyperfine --warmup 1 --runs 3 \
+          hyperfine --warmup 1 --runs 10 \
             --prepare 'rm -rf ~/Library/Developer/Xcode/DerivedData && ../tuist-setup-temp-project' \
             --conclude '../tuist-cleanup-temp-project' \
             'xcodebuild -project App.xcodeproj -scheme App -destination "platform=iOS Simulator,name=iPhone 17" build' \
@@ -43,7 +43,7 @@ jobs:
       - name: Benchmark clean build with pre-warmed cache
         working-directory: xcode_project_with_cache
         run: |
-          hyperfine --warmup 1 --runs 3 \
+          hyperfine --warmup 1 --runs 10 \
             --setup '../tuist-setup-temp-project && xcodebuild -project App.xcodeproj -scheme App -destination "platform=iOS Simulator,name=iPhone 17" build' \
             --prepare 'rm -rf ~/Library/Developer/Xcode/DerivedData' \
             --conclude '../tuist-cleanup-temp-project' \
@@ -54,7 +54,7 @@ jobs:
       - name: Benchmark clean build without caching
         working-directory: xcode_project_with_cache
         run: |
-          hyperfine --warmup 1 --runs 3 \
+          hyperfine --warmup 1 --runs 10 \
             --prepare 'rm -rf ~/Library/Developer/Xcode/DerivedData' \
             'xcodebuild -project App.xcodeproj -scheme App -destination "platform=iOS Simulator,name=iPhone 17" build COMPILATION_CACHE_ENABLE_CACHING=NO' \
             --show-output
@@ -63,7 +63,7 @@ jobs:
       - name: Benchmark clean build with local caching
         working-directory: xcode_project_with_cache
         run: |
-          hyperfine --warmup 1 --runs 3 \
+          hyperfine --warmup 1 --runs 10 \
             --setup 'rm -rf ~/Library/Developer/Xcode/DerivedData' \
             'xcodebuild -project App.xcodeproj -scheme App -destination "platform=iOS Simulator,name=iPhone 17" build COMPILATION_CACHE_ENABLE_PLUGIN=NO' \
             --show-output

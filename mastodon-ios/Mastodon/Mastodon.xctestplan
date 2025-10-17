@@ -1,0 +1,111 @@
+{
+  "configurations" : [
+    {
+      "id" : "63D68260-F74D-4CA6-ADBC-B1263DD6BE55",
+      "name" : "English",
+      "options" : {
+        "language" : "en"
+      }
+    },
+    {
+      "enabled" : false,
+      "id" : "06DB4A21-6DDF-454F-ABEE-E77DD7AAA146",
+      "name" : "Arabic",
+      "options" : {
+        "language" : "ar"
+      }
+    },
+    {
+      "enabled" : false,
+      "id" : "D95412BD-821C-4FE5-9DA6-8D77C0972B72",
+      "name" : "Catalan",
+      "options" : {
+        "language" : "ca"
+      }
+    },
+    {
+      "enabled" : false,
+      "id" : "EE9219EA-2011-48B5-A475-309C99F91D6D",
+      "name" : "Chinese, Simplified",
+      "options" : {
+        "language" : "zh-Hans"
+      }
+    },
+    {
+      "enabled" : false,
+      "id" : "6FBBAF31-D445-482E-B67B-271F8216AEB6",
+      "name" : "Dutch",
+      "options" : {
+        "language" : "nl"
+      }
+    },
+    {
+      "enabled" : false,
+      "id" : "45A93B8D-54C5-4906-8AC6-5B6FE561CA25",
+      "name" : "French",
+      "options" : {
+        "language" : "fr"
+      }
+    },
+    {
+      "enabled" : false,
+      "id" : "8344111A-3025-4CA0-838C-AF94EBA4D4BE",
+      "name" : "German",
+      "options" : {
+        "language" : "de"
+      }
+    },
+    {
+      "enabled" : false,
+      "id" : "4EE64E47-F9E5-4189-8571-20D29941F854",
+      "name" : "Japanese",
+      "options" : {
+        "language" : "ja"
+      }
+    },
+    {
+      "enabled" : false,
+      "id" : "746F1EBA-E12B-40C4-85C6-A14DC61A180B",
+      "name" : "Spanish",
+      "options" : {
+        "language" : "es"
+      }
+    },
+    {
+      "enabled" : false,
+      "id" : "EDA29FF5-1F0E-451A-863D-0899CE07CB09",
+      "name" : "Spanish (Latin America)",
+      "options" : {
+        "language" : "es-419"
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "skippedTests" : [
+        "MastodonTests",
+        "MastodonTests\/testConnectOnion()",
+        "MastodonTests\/testWebFinger()"
+      ],
+      "target" : {
+        "containerPath" : "container:Mastodon.xcodeproj",
+        "identifier" : "DB427DE725BAA00100D1B89D",
+        "name" : "MastodonTests"
+      }
+    },
+    {
+      "skippedTests" : [
+        "MastodonUITests\/testLaunchPerformance()"
+      ],
+      "target" : {
+        "containerPath" : "container:Mastodon.xcodeproj",
+        "identifier" : "DB427DF225BAA00100D1B89D",
+        "name" : "MastodonUITests"
+      }
+    }
+  ],
+  "version" : 1
+}

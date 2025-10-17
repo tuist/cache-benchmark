@@ -58,9 +58,10 @@ public final class BlurhashImageCacheService {
             }
         }()
         
-        let image = UIImage(blurHash: blurhash, size: imageSize)
-
-        return image
+//        let image = UIImage(blurHash: blurhash, size: imageSize)
+//
+//        return image
+        return nil
     }
 
 }

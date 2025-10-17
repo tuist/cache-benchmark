@@ -32,15 +32,17 @@ jobs:
 
       - name: Setup Tuist Cache
         working-directory: xcode_project_with_cache
-        run: tuist setup cache
+        run: |
+          unset GITHUB_RUN_ID CI BUILD_NUMBER
+          env -u GITHUB_RUN_ID -u CI -u BUILD_NUMBER tuist setup cache
 
       # Benchmark 1: Clean build with cache uploads
       - name: Benchmark clean build with cache uploads
         working-directory: xcode_project_with_cache
         run: |
           hyperfine --warmup 1 --runs 3 \
-            --prepare 'rm -rf ~/Library/Developer/Xcode/DerivedData && mise run tuist-setup-temp-project' \
-            --conclude 'mise run tuist-cleanup-temp-project' \
+            --prepare 'rm -rf ~/Library/Developer/Xcode/DerivedData && unset GITHUB_RUN_ID CI BUILD_NUMBER && env -u GITHUB_RUN_ID -u CI -u BUILD_NUMBER mise run tuist-setup-temp-project' \
+            --conclude 'unset GITHUB_RUN_ID CI BUILD_NUMBER && env -u GITHUB_RUN_ID -u CI -u BUILD_NUMBER mise run tuist-cleanup-temp-project' \
             'xcodebuild -project App.xcodeproj -scheme App -destination "platform=iOS Simulator,name=iPhone 17" build' \
             --show-output
 
@@ -49,9 +51,9 @@ jobs:
         working-directory: xcode_project_with_cache
         run: |
           hyperfine --warmup 1 --runs 3 \
-            --setup 'mise run tuist-setup-temp-project && xcodebuild -project App.xcodeproj -scheme App -destination "platform=iOS Simulator,name=iPhone 17" build' \
+            --setup 'unset GITHUB_RUN_ID CI BUILD_NUMBER && env -u GITHUB_RUN_ID -u CI -u BUILD_NUMBER mise run tuist-setup-temp-project && xcodebuild -project App.xcodeproj -scheme App -destination "platform=iOS Simulator,name=iPhone 17" build' \
             --prepare 'rm -rf ~/Library/Developer/Xcode/DerivedData' \
-            --conclude 'mise run tuist-cleanup-temp-project' \
+            --conclude 'unset GITHUB_RUN_ID CI BUILD_NUMBER && env -u GITHUB_RUN_ID -u CI -u BUILD_NUMBER mise run tuist-cleanup-temp-project' \
             'xcodebuild -project App.xcodeproj -scheme App -destination "platform=iOS Simulator,name=iPhone 17" build' \
             --show-output
 

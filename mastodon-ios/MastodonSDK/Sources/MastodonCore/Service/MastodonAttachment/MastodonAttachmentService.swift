@@ -61,12 +61,12 @@ public final class MastodonAttachmentService {
         
         Just(pickerResult)
             .flatMap { result -> AnyPublisher<Mastodon.Query.MediaAttachment?, Error> in
-                if result.itemProvider.hasRepresentationConforming(toTypeIdentifier: UTType.image.identifier, fileOptions: []) {
-                    return ItemProviderLoader.loadImageData(from: result).eraseToAnyPublisher()
-                }
-                if result.itemProvider.hasRepresentationConforming(toTypeIdentifier: UTType.movie.identifier, fileOptions: []) {
-                    return ItemProviderLoader.loadVideoData(from: result).eraseToAnyPublisher()
-                }
+//                if result.itemProvider.hasRepresentationConforming(toTypeIdentifier: UTType.image.identifier, fileOptions: []) {
+//                    return ItemProviderLoader.loadImageData(from: result).eraseToAnyPublisher()
+//                }
+//                if result.itemProvider.hasRepresentationConforming(toTypeIdentifier: UTType.movie.identifier, fileOptions: []) {
+//                    return ItemProviderLoader.loadVideoData(from: result).eraseToAnyPublisher()
+//                }
                 return Fail(error: AttachmentError.invalidAttachmentType).eraseToAnyPublisher()
             }
             .sink { [weak self] completion in

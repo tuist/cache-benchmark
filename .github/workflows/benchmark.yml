@@ -72,6 +72,7 @@ jobs:
         run: |
           hyperfine --warmup 1 --runs 10 \
             --setup 'rm -rf ~/Library/Developer/Xcode/DerivedData' \
+            --prepare 'xcodebuild -project App.xcodeproj -scheme App -destination "platform=iOS Simulator,name=iPhone 17" clean' \
             'xcodebuild -project App.xcodeproj -scheme App -destination "platform=iOS Simulator,name=iPhone 17" build COMPILATION_CACHE_ENABLE_PLUGIN=NO' \
             --show-output
 
@@ -129,5 +130,6 @@ jobs:
         run: |
           hyperfine --warmup 1 --runs 5 \
             --setup 'rm -rf ~/Library/Developer/Xcode/DerivedData' \
+            --prepare 'xcodebuild -project Mastodon.xcodeproj -scheme Mastodon -destination "platform=iOS Simulator,name=iPhone 17" clean' \
             'xcodebuild -project Mastodon.xcodeproj -scheme Mastodon -destination "platform=iOS Simulator,name=iPhone 17" build COMPILATION_CACHE_ENABLE_PLUGIN=NO' \
             --show-output

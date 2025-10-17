@@ -6,7 +6,7 @@ ORG_NAME="org-$(openssl rand -hex 4)"
 PROJECT_NAME="project-$(openssl rand -hex 4)"
 
 echo "Creating temporary organization: $ORG_NAME"
-tuist organization create "$ORG_NAME"
+tuist organization create "$ORG_NAME" --verbose
 
 echo "Creating temporary project: $ORG_NAME/$PROJECT_NAME"
 tuist project create "$ORG_NAME/$PROJECT_NAME"

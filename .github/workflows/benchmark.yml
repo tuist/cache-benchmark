@@ -77,6 +77,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Build Mastodon iOS
+        working-directory: mastodon-ios
+        run: xcodebuild -project Mastodon.xcodeproj -scheme Mastodon -destination "platform=iOS Simulator,name=iPhone 17" build
+
       - name: Authenticate Tuist
         working-directory: mastodon-ios
         run: TUIST_URL="https://staging.tuist.dev" tuist auth login --email tuistrocks@tuist.dev --password ${{ secrets.TUIST_TEST_ACCOUNT_PASSWORD }}

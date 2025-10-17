@@ -36,12 +36,12 @@ jobs:
       - name: Build Tuist
         working-directory: tuist-build
         run: |
-          swift build -c release --product ProjectDescription
-          swift build -c release --product tuist
+          swift build -c debug --product ProjectDescription
+          swift build -c debug --product tuist
 
       - name: Copy Built Executable
         run: |
-          ln -s tuist-build/.build/release/tuist ./tuist-built
+          ln -s tuist-build/.build/debug/tuist ./tuist-built
 
       - name: Authenticate Tuist
         working-directory: xcode_project_with_cache

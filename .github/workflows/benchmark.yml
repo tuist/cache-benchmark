@@ -29,6 +29,13 @@ jobs:
         working-directory: xcode_project_with_cache
         run: tuist setup cache
 
+      # - name: Clone Tuist Repository
+      #   run: git clone https://github.com/tuist/tuist tuist
+
+      # - name: Setup Tuist Cache
+      #   working-directory: tuist
+      #   run: swift run tuist setup cache --path ../xcode_project_with_cache
+
       # Benchmark 1: Clean build with cache uploads
       - name: Benchmark clean build with cache uploads
         working-directory: xcode_project_with_cache

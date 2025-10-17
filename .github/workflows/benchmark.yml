@@ -41,9 +41,9 @@ jobs:
         working-directory: xcode_project_with_cache
         run: |
           hyperfine --warmup 1 --runs 10 \
-            --prepare 'rm -rf ~/Library/Developer/Xcode/DerivedData && ../tuist-setup-temp-project' \
+            --prepare 'rm -rf ~/Library/Developer/Xcode/DerivedData && ../tuist-setup-temp-project && tuist setup cache' \
             --conclude '../tuist-cleanup-temp-project' \
-            'xcodebuild -project App.xcodeproj -scheme App -destination "platform=iOS Simulator,name=iPhone 17" build' \
+            'ORG=$(cat ../.tuist-temp-org) && PROJECT=$(cat ../.tuist-temp-project) && xcodebuild -project App.xcodeproj -scheme App -destination "platform=iOS Simulator,name=iPhone 17" build COMPILATION_CACHE_REMOTE_SERVICE_PATH="$ORG/$PROJECT"' \
             --show-output
 
       # Benchmark 2: Clean build with pre-warmed cache
@@ -51,9 +51,8 @@ jobs:
         working-directory: xcode_project_with_cache
         run: |
           hyperfine --warmup 1 --runs 10 \
-            --setup '../tuist-setup-temp-project && xcodebuild -project App.xcodeproj -scheme App -destination "platform=iOS Simulator,name=iPhone 17" build' \
+            --setup 'xcodebuild -project App.xcodeproj -scheme App -destination "platform=iOS Simulator,name=iPhone 17" build' \
             --prepare 'rm -rf ~/Library/Developer/Xcode/DerivedData' \
-            --conclude '../tuist-cleanup-temp-project' \
             'xcodebuild -project App.xcodeproj -scheme App -destination "platform=iOS Simulator,name=iPhone 17" build' \
             --show-output
 

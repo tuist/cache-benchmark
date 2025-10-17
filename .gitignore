@@ -1,3 +1,7 @@
 !*.xcodeproj
 .claude
+!.github
 xcuserdata/
+.tuist-temp-org
+.tuist-temp-project
+Tuist.swift.original

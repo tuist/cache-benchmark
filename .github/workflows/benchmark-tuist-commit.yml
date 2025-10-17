@@ -26,12 +26,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Clone Tuist Repository
-        run: git clone https://github.com/tuist/tuist tuist-build
-      
-      - name: Checkout Specific Commit
-        working-directory: tuist-build
-        run: git checkout ${{ github.event.inputs.tuist_commit }}
+      - name: Checkout Tuist Repository
+        uses: actions/checkout@v4
+        with:
+          repository: tuist/tuist
+          ref: ${{ github.event.inputs.tuist_commit }}
+          path: tuist-build
       
       - name: Build Tuist
         working-directory: tuist-build

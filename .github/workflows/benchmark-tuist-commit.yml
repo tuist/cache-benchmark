@@ -35,13 +35,18 @@ jobs:
 
       - name: Build Tuist
         working-directory: tuist-build
+        env:
+          TUIST_CONFIG_TOKEN: ${{ secrets.TUIST_CONFIG_TOKEN }}
         run: |
-          swift build -c debug --product ProjectDescription
-          swift build -c debug --product tuist
+          tuist install
+          tuist generate tuist ProjectDescription
+          DERIVED_DATA_PATH="$PWD/DerivedData"
+          xcodebuild build -workspace Tuist.xcworkspace -scheme ProjectDescription -derivedDataPath "$DERIVED_DATA_PATH"
+          xcodebuild build -workspace Tuist.xcworkspace -scheme tuist -derivedDataPath "$DERIVED_DATA_PATH"
 
       - name: Copy Built Executable
         run: |
-          ln -s tuist-build/.build/debug/tuist ./tuist-built
+          ln -s tuist-build/DerivedData/Build/Products/Debug/tuist ./tuist-built
 
       - name: Authenticate Tuist
         working-directory: xcode_project_with_cache

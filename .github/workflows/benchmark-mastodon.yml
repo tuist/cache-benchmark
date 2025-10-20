@@ -1,7 +1,7 @@
 name: Benchmark Mastodon
 
 on:
-  push:
+  workflow_dispatch:
 
 permissions:
   contents: read

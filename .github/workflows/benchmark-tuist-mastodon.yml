@@ -82,9 +82,9 @@ jobs:
         working-directory: mastodon-tuist-ios
         run: |
           hyperfine --warmup 1 --runs 5 \
-            --setup 'xcodebuild -workspace MastodonTuist.xcworkspace -scheme Mastodon build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO COMPILATION_CACHE_ENABLE_CACHING="YES" COMPILATION_CACHE_ENABLE_PLUGIN="YES" COMPILATION_CACHE_REMOTE_SERVICE_PATH="$HOME/.local/state/tuist/tuist_tuist.sock"' \
+            --setup 'xcodebuild -workspace MastodonTuist.xcworkspace -scheme Mastodon build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO COMPILATION_CACHE_ENABLE_CACHING="YES" COMPILATION_CACHE_ENABLE_PLUGIN="YES" COMPILATION_CACHE_REMOTE_SERVICE_PATH="$HOME/.local/state/tuist/tuist_mastodon.sock"' \
             --prepare 'rm -rf ~/Library/Developer/Xcode/DerivedData' \
-            'xcodebuild -workspace MastodonTuist.xcworkspace -scheme Mastodon build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO COMPILATION_CACHE_ENABLE_CACHING="YES" COMPILATION_CACHE_ENABLE_PLUGIN="YES" COMPILATION_CACHE_REMOTE_SERVICE_PATH="$HOME/.local/state/tuist/tuist_tuist.sock"' \
+            'xcodebuild -workspace MastodonTuist.xcworkspace -scheme Mastodon build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO COMPILATION_CACHE_ENABLE_CACHING="YES" COMPILATION_CACHE_ENABLE_PLUGIN="YES" COMPILATION_CACHE_REMOTE_SERVICE_PATH="$HOME/.local/state/tuist/tuist_mastodon.sock"' \
             --show-output
 
   no-cache:

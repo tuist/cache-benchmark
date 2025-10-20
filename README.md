@@ -87,6 +87,15 @@ Range (min … max):   41.223 s … 47.854 s    3 runs
 
 Mastodon using generated projects.
 
+#### Clean build with local caching
+
+https://github.com/tuist/cache-benchmark/actions/runs/18663006095/job/53207698374
+
+```
+Time (mean ± σ):     42.941 s ±  0.832 s    [User: 2.991 s, System: 1.330 s]
+Range (min … max):   41.855 s … 44.184 s    5 runs
+```
+
 #### Clean build with module cache
 
 https://github.com/tuist/cache-benchmark/actions/runs/18662844442/job/53207204836

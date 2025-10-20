@@ -1,0 +1,147 @@
+name: Benchmark Pocket Casts
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: benchmark-pocket-casts-${{ github.head_ref }}
+  cancel-in-progress: true
+
+jobs:
+  cache-uploads:
+    name: Clean build with cache uploads
+    runs-on: namespace-profile-default-macos
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: jdx/mise-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Authenticate Tuist
+        working-directory: pocket-casts-ios
+        run: TUIST_URL="https://staging.tuist.dev" tuist auth login --email tuistrocks@tuist.dev --password ${{ secrets.TUIST_TEST_ACCOUNT_PASSWORD }}
+
+      - name: Setup Tuist Cache
+        working-directory: pocket-casts-ios
+        run: tuist setup cache
+
+      - name: Install Dependencies
+        working-directory: pocket-casts-ios
+        run: |
+          gem install bundler
+          bundle install
+          make install_dependencies
+
+      - name: Benchmark clean build with cache uploads
+        working-directory: pocket-casts-ios
+        run: |
+          hyperfine --warmup 1 --runs 3 \
+            --prepare 'rm -rf ~/Library/Developer/Xcode/DerivedData && xcodebuild -project podcasts.xcodeproj -scheme pocketcasts -resolvePackageDependencies && ../tuist-setup-temp-project' \
+            'HANDLE="$(cat .tuist-temp-org)_$(cat .tuist-temp-project)" && xcodebuild -project podcasts.xcodeproj -scheme pocketcasts -destination "platform=iOS Simulator,name=iPhone 17" build COMPILATION_CACHE_ENABLE_CACHING="YES" COMPILATION_CACHE_ENABLE_PLUGIN="YES" COMPILATION_CACHE_REMOTE_SERVICE_PATH="$HOME/.local/state/tuist/$HANDLE.sock"' \
+            --conclude '../tuist-cleanup-temp-project' \
+            --show-output
+
+  pre-warmed:
+    name: Clean build with pre-warmed cache
+    runs-on: namespace-profile-default-macos
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: jdx/mise-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Authenticate Tuist
+        working-directory: pocket-casts-ios
+        run: TUIST_URL="https://staging.tuist.dev" tuist auth login --email tuistrocks@tuist.dev --password ${{ secrets.TUIST_TEST_ACCOUNT_PASSWORD }}
+
+      - name: Setup Tuist Cache
+        working-directory: pocket-casts-ios
+        run: tuist setup cache
+
+      - name: Install Dependencies
+        working-directory: pocket-casts-ios
+        run: |
+          gem install bundler
+          bundle install
+          make install_dependencies
+
+      - name: Benchmark clean build with pre-warmed cache
+        working-directory: pocket-casts-ios
+        run: |
+          hyperfine --warmup 1 --runs 3 \
+            --setup 'xcodebuild -project podcasts.xcodeproj -scheme pocketcasts -destination "platform=iOS Simulator,name=iPhone 17" build COMPILATION_CACHE_ENABLE_CACHING="YES" COMPILATION_CACHE_ENABLE_PLUGIN="YES" COMPILATION_CACHE_REMOTE_SERVICE_PATH="$HOME/.local/state/tuist/tuist_pocket_casts.sock"' \
+            --prepare 'rm -rf ~/Library/Developer/Xcode/DerivedData && xcodebuild -project podcasts.xcodeproj -scheme pocketcasts -resolvePackageDependencies' \
+            'xcodebuild -project podcasts.xcodeproj -scheme pocketcasts -destination "platform=iOS Simulator,name=iPhone 17" build COMPILATION_CACHE_ENABLE_CACHING="YES" COMPILATION_CACHE_ENABLE_PLUGIN="YES" COMPILATION_CACHE_REMOTE_SERVICE_PATH="$HOME/.local/state/tuist/tuist_pocket_casts.sock"' \
+            --show-output
+
+  no-cache:
+    name: Clean build without caching
+    runs-on: namespace-profile-default-macos
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: jdx/mise-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Authenticate Tuist
+        working-directory: pocket-casts-ios
+        run: TUIST_URL="https://staging.tuist.dev" tuist auth login --email tuistrocks@tuist.dev --password ${{ secrets.TUIST_TEST_ACCOUNT_PASSWORD }}
+
+      - name: Setup Tuist Cache
+        working-directory: pocket-casts-ios
+        run: tuist setup cache
+
+      - name: Install Dependencies
+        working-directory: pocket-casts-ios
+        run: |
+          gem install bundler
+          bundle install
+          make install_dependencies
+
+      - name: Benchmark clean build without caching
+        working-directory: pocket-casts-ios
+        run: |
+          hyperfine --warmup 1 --runs 3 \
+            --prepare 'rm -rf ~/Library/Developer/Xcode/DerivedData && xcodebuild -project podcasts.xcodeproj -scheme pocketcasts -resolvePackageDependencies' \
+            'xcodebuild -project podcasts.xcodeproj -scheme pocketcasts -destination "platform=iOS Simulator,name=iPhone 17" build COMPILATION_CACHE_ENABLE_CACHING=NO' \
+            --show-output
+
+  local-cache:
+    name: Clean build with local caching
+    runs-on: namespace-profile-default-macos
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: jdx/mise-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Authenticate Tuist
+        working-directory: pocket-casts-ios
+        run: TUIST_URL="https://staging.tuist.dev" tuist auth login --email tuistrocks@tuist.dev --password ${{ secrets.TUIST_TEST_ACCOUNT_PASSWORD }}
+
+      - name: Setup Tuist Cache
+        working-directory: pocket-casts-ios
+        run: tuist setup cache
+
+      - name: Install Dependencies
+        working-directory: pocket-casts-ios
+        run: |
+          gem install bundler
+          bundle install
+          make install_dependencies
+
+      - name: Benchmark clean build with local caching
+        working-directory: pocket-casts-ios
+        run: |
+          hyperfine --warmup 1 --runs 3 \
+            --setup 'rm -rf ~/Library/Developer/Xcode/DerivedData' \
+            --prepare 'xcodebuild -project podcasts.xcodeproj -scheme pocketcasts -destination "platform=iOS Simulator,name=iPhone 17" clean && xcodebuild -project podcasts.xcodeproj -scheme pocketcasts -resolvePackageDependencies' \
+            'xcodebuild -project podcasts.xcodeproj -scheme pocketcasts -destination "platform=iOS Simulator,name=iPhone 17" build COMPILATION_CACHE_ENABLE_CACHING="YES" COMPILATION_CACHE_ENABLE_PLUGIN=NO' \
+            --show-output

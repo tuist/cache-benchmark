@@ -42,7 +42,7 @@ jobs:
         run: |
           hyperfine --warmup 1 --runs 3 \
             --prepare 'rm -rf ~/Library/Developer/Xcode/DerivedData && ../tuist-setup-temp-project' \
-            'HANDLE="$(cat .tuist-temp-org)_$(cat .tuist-temp-project)" && xcodebuild -workspace Tuist.xcworkspace -scheme Tuist-Workspace build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO COMPILATION_CACHE_ENABLE_CACHING="YES" COMPILATION_CACHE_ENABLE_PLUGIN="YES" COMPILATION_CACHE_REMOTE_SERVICE_PATH="$HOME/.local/state/tuist/$HANDLE.sock"' \
+            'HANDLE="$(cat .tuist-temp-org)_$(cat .tuist-temp-project)" && xcodebuild -workspace Tuist.xcworkspace -scheme TuistApp build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO COMPILATION_CACHE_ENABLE_CACHING="YES" COMPILATION_CACHE_ENABLE_PLUGIN="YES" COMPILATION_CACHE_REMOTE_SERVICE_PATH="$HOME/.local/state/tuist/$HANDLE.sock"' \
             --conclude '../tuist-cleanup-temp-project' \
             --show-output
 
@@ -76,9 +76,9 @@ jobs:
         working-directory: tuist
         run: |
           hyperfine --warmup 1 --runs 3 \
-            --setup 'xcodebuild -workspace Tuist.xcworkspace -scheme Tuist-Workspace build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO COMPILATION_CACHE_ENABLE_CACHING="YES" COMPILATION_CACHE_ENABLE_PLUGIN="YES" COMPILATION_CACHE_REMOTE_SERVICE_PATH="$HOME/.local/state/tuist/tuist_tuist.sock"' \
+            --setup 'xcodebuild -workspace Tuist.xcworkspace -scheme TuistApp build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO COMPILATION_CACHE_ENABLE_CACHING="YES" COMPILATION_CACHE_ENABLE_PLUGIN="YES" COMPILATION_CACHE_REMOTE_SERVICE_PATH="$HOME/.local/state/tuist/tuist_tuist.sock"' \
             --prepare 'rm -rf ~/Library/Developer/Xcode/DerivedData' \
-            'xcodebuild -workspace Tuist.xcworkspace -scheme Tuist-Workspace build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO COMPILATION_CACHE_ENABLE_CACHING="YES" COMPILATION_CACHE_ENABLE_PLUGIN="YES" COMPILATION_CACHE_REMOTE_SERVICE_PATH="$HOME/.local/state/tuist/tuist_tuist.sock"' \
+            'xcodebuild -workspace Tuist.xcworkspace -scheme TuistApp build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO COMPILATION_CACHE_ENABLE_CACHING="YES" COMPILATION_CACHE_ENABLE_PLUGIN="YES" COMPILATION_CACHE_REMOTE_SERVICE_PATH="$HOME/.local/state/tuist/tuist_tuist.sock"' \
             --show-output
 
   no-cache:
@@ -112,7 +112,7 @@ jobs:
         run: |
           hyperfine --warmup 1 --runs 3 \
             --prepare 'rm -rf ~/Library/Developer/Xcode/DerivedData' \
-            'xcodebuild -workspace Tuist.xcworkspace -scheme Tuist-Workspace build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO COMPILATION_CACHE_ENABLE_CACHING=NO' \
+            'xcodebuild -workspace Tuist.xcworkspace -scheme TuistApp build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO COMPILATION_CACHE_ENABLE_CACHING=NO' \
             --show-output
 
   local-cache:
@@ -146,6 +146,6 @@ jobs:
         run: |
           hyperfine --warmup 1 --runs 3 \
             --setup 'rm -rf ~/Library/Developer/Xcode/DerivedData' \
-            --prepare 'xcodebuild -workspace Tuist.xcworkspace -scheme Tuist-Workspace -destination "generic/platform=macOS" clean' \
-            'xcodebuild -workspace Tuist.xcworkspace -scheme Tuist-Workspace build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO COMPILATION_CACHE_ENABLE_CACHING="YES" COMPILATION_CACHE_ENABLE_PLUGIN=NO' \
+            --prepare 'xcodebuild -workspace Tuist.xcworkspace -scheme TuistApp -destination "generic/platform=macOS" clean' \
+            'xcodebuild -workspace Tuist.xcworkspace -scheme TuistApp build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO COMPILATION_CACHE_ENABLE_CACHING="YES" COMPILATION_CACHE_ENABLE_PLUGIN=NO' \
             --show-output

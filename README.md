@@ -121,6 +121,64 @@ Time (mean ± σ):     34.936 s ±  3.437 s    [User: 32.681 s, System: 6.891 s]
 Range (min … max):   30.482 s … 39.250 s    5 runs
 ```
 
+###  pocket-casts-ios
+
+#### Clean build without caching
+
+https://github.com/tuist/cache-benchmark/actions/runs/18661646098/job/53205488741
+
+```
+Time (mean ± σ):     168.073 s ± 11.333 s    [User: 21.201 s, System: 9.153 s]
+Range (min … max):   155.411 s … 177.266 s    3 runs
+```
+
+#### Clean build with pre-warmed cache (4.88.1)
+
+https://github.com/tuist/cache-benchmark/actions/runs/18661646098/job/53203291954
+
+```
+Time (mean ± σ):     195.473 s ± 11.793 s    [User: 28.620 s, System: 16.490 s]
+Range (min … max):   184.202 s … 207.726 s    3 runs
+```
+
+#### Clean build with local caching
+
+https://github.com/tuist/cache-benchmark/actions/runs/18661646098/job/53205488586
+
+```
+Time (mean ± σ):     111.316 s ±  8.637 s    [User: 22.217 s, System: 9.501 s]
+Range (min … max):   104.142 s … 120.903 s    3 runs
+```
+
+### wikipedia-ios
+
+#### Clean build without caching
+
+https://github.com/tuist/cache-benchmark/actions/runs/18652412501/job/53173274935
+
+```
+Time (mean ± σ):     66.954 s ±  0.143 s    [User: 4.539 s, System: 1.857 s]
+Range (min … max):   66.831 s … 67.111 s    3 runs
+```
+
+#### Clean build with pre-warmed cache (4.88.1)
+
+https://github.com/tuist/cache-benchmark/actions/runs/18652412501/job/53173274960
+
+```
+Time (mean ± σ):     65.291 s ±  3.015 s    [User: 6.744 s, System: 4.126 s]
+Range (min … max):   62.603 s … 68.551 s    3 runs
+```
+
+#### Clean build with local caching
+
+https://github.com/tuist/cache-benchmark/actions/runs/18652412501/job/53173274957
+
+```
+Time (mean ± σ):     51.520 s ±  0.600 s    [User: 3.882 s, System: 1.621 s]
+Range (min … max):   50.828 s … 51.886 s    3 runs
+```
+
 ## Running Locally
 
 ```bash

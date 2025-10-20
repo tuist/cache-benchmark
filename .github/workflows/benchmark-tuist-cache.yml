@@ -32,7 +32,7 @@ jobs:
       - name: Benchmark clean build with cache uploads
         working-directory: tuist
         run: |
-          hyperfine --warmup 1 --runs 3 \
+          hyperfine --warmup 1 --runs 5 \
             --prepare 'rm -rf ~/Library/Developer/Xcode/DerivedData && tuist clean binaries' \
             'tuist cache && tuist generate TuistApp && xcodebuild -workspace Tuist.xcworkspace -scheme TuistApp build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO' \
             --show-output
@@ -62,7 +62,7 @@ jobs:
       - name: Benchmark clean build with pre-warmed cache
         working-directory: tuist
         run: |
-          hyperfine --warmup 1 --runs 3 \
+          hyperfine --warmup 1 --runs 5 \
             --prepare 'rm -rf ~/Library/Developer/Xcode/DerivedData && tuist clean binaries' \
             'tuist generate TuistApp && xcodebuild -workspace Tuist.xcworkspace -scheme TuistApp build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO' \
             --show-output
@@ -85,10 +85,14 @@ jobs:
         working-directory: tuist
         run: tuist install
 
+      - name: Cache project
+        working-directory: tuist
+        run: tuist cache
+
       - name: Benchmark clean build without caching
         working-directory: tuist
         run: |
-          hyperfine --warmup 1 --runs 3 \
+          hyperfine --warmup 1 --runs 5 \
             --prepare 'rm -rf ~/Library/Developer/Xcode/DerivedData && tuist clean binaries' \
             'tuist generate TuistApp && xcodebuild -workspace Tuist.xcworkspace -scheme TuistApp build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO' \
             --show-output
@@ -111,10 +115,14 @@ jobs:
         working-directory: tuist
         run: tuist install
 
+      - name: Cache project
+        working-directory: tuist
+        run: tuist cache
+
       - name: Benchmark clean build with local caching
         working-directory: tuist
         run: |
-          hyperfine --warmup 1 --runs 3 \
+          hyperfine --warmup 1 --runs 5 \
             --setup 'tuist cache' \
             --prepare 'rm -rf ~/Library/Developer/Xcode/DerivedData && tuist clean binaries' \
             'tuist generate TuistApp && xcodebuild -workspace Tuist.xcworkspace -scheme TuistApp build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO' \

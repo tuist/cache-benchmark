@@ -152,6 +152,6 @@ jobs:
         run: |
           hyperfine --warmup 1 --runs 5 \
             --setup 'rm -rf ~/Library/Developer/Xcode/DerivedData' \
-            --prepare 'xcodebuild -workspace MastodonTuist.xcworkspace -scheme Mastodon -destination "generic/platform=macOS" clean' \
+            --prepare 'xcodebuild -workspace MastodonTuist.xcworkspace -scheme Mastodon clean' \
             'xcodebuild -workspace MastodonTuist.xcworkspace -scheme Mastodon build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO COMPILATION_CACHE_ENABLE_CACHING="YES" COMPILATION_CACHE_ENABLE_PLUGIN=NO' \
             --show-output

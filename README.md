@@ -83,6 +83,19 @@ Time (mean ± σ):     45.262 s ±  3.545 s    [User: 14.994 s, System: 5.318 s]
 Range (min … max):   41.223 s … 47.854 s    3 runs
 ```
 
+### mastodon-tuist-ios
+
+Mastodon using generated projects.
+
+#### Clean build with module cache
+
+https://github.com/tuist/cache-benchmark/actions/runs/18662844442/job/53207204836
+
+```
+Time (mean ± σ):     24.999 s ±  0.542 s    [User: 10.611 s, System: 2.723 s]
+Range (min … max):   24.599 s … 25.932 s    5 runs
+```
+
 ### Tuist CLI
 
 #### Clean build without caching

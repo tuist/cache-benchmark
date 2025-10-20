@@ -1,0 +1,21 @@
+# Customise this file, documentation can be found here:
+# https://github.com/KrauseFx/fastlane/tree/master/docs
+
+$:.unshift File.dirname(__FILE__)
+
+default_platform :ios
+
+
+platform :ios do
+  before_all do
+     # Set project for commit_version_bump, which seems to get confused by projects in other folders
+     ENV['FL_BUILD_NUMBER_PROJECT'] = "Wikipedia.xcodeproj"
+     ensure_git_status_clean if ENV['FL_ENSURE_CLEAN']
+  end
+
+  desc "Upload app store metadata"
+  lane :upload_app_store_metadata do
+    deliver(skip_binary_upload: true, skip_screenshots: true)
+  end
+
+end

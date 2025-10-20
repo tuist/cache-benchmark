@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>urls</key>
+	<dict>
+		<key>sharealike</key>
+		<string>https://creativecommons.org/licenses/by-sa/4.0/</string>
+		<key>mit</key>
+		<string>https://raw.githubusercontent.com/wikimedia/wikipedia-ios/main/LICENSE.txt</string>
+		<key>tsg</key>
+		<string>https://tsgteam.org</string>
+		<key>feedback</key>
+		<string>mailto:ios-support@wikimedia.org?subject=Feedback:$1</string>
+		<key>twn</key>
+		<string>https://translatewiki.net</string>
+		<key>wmf</key>
+		<string>https://wikimediafoundation.org</string>
+		<key>applemaps</key>
+		<string>https://gspe21-ssl.ls.apple.com/html/attribution.html</string>
+	</dict>
+	<key>repositories</key>
+	<dict>
+		<key>GitHub</key>
+		<string>https://github.com/wikimedia/wikipedia-ios</string>
+		<key>Gerrit</key>
+		<string>https://gerrit.wikimedia.org/r/#/q/project:apps/ios/wikipedia,n,z</string>
+	</dict>
+	<key>contributors</key>
+	<array>
+		<string>Abbey Ripstra</string>
+		<string>Adam Baso</string>
+		<string>Alexander Claussen</string>
+		<string>Amal Ramadan</string>
+		<string>Amani Hunter</string>
+		<string>Amir E. Aharoni</string>
+		<string>Ammar Abdulhamid</string>
+		<string>Anirudh S</string>
+		<string>André Costa</string>
+		<string>Anthony Borba</string>
+		<string>Antoine Musso</string>
+		<string>Alexey Karataev</string>
+		<string>Barbara Martina Rodeker</string>
+		<string>bart-kneepkens</string>
+		<string>Bernd Sitzmann</string>
+		<string>Boris Dušek</string>
+		<string>brett ohland</string>
+		<string>Brian Gerstle</string>
+		<string>Brion Vibber</string>
+		<string>Carolyn Li-Madeo</string>
+		<string>Chelsy Xie</string>
+		<string>Christian Bilodeau</string>
+		<string>Cole Roberts</string>
+		<string>Corey Floyd</string>
+		<string>cromulentlabs</string>
+		<string>Daisy Chen</string>
+		<string>Dan Garry</string>
+		<string>Daniel McGlinchey</string>
+		<string>David Xia</string>
+		<string>Deepak Mantena</string>
+		<string>Dmitry Brant</string>
+		<string>Douglas Rodrigues Pinto Neto</string>
+		<string>Elena Tonkovidova</string>
+		<string>Ethan Holshouser</string>
+		<string>Evelyn Harthbrooke</string>
+		<string>Gabicoware</string>
+		<string>Gianmarco Salerno</string>
+		<string>Hua Zhenyu</string>
+		<string>Hynek Hanke</string>
+		<string>Grey Olson</string>
+		<string>Ian MacFarlane</string>
+		<string>Isidore Baldado</string>
+		<string>Jan Berkel</string>
+		<string>Jazmin Tanner</string>
+		<string>Joe Walsh</string>
+		<string>Jon Harald Søby</string>
+		<string>Jonatan Svensson Glad</string>
+		<string>Joshua Minor</string>
+		<string>Julien Bodet</string>
+		<string>Junho Lee</string>
+		<string>Kaity Hammerstein</string>
+		<string>Kelly Roach</string>
+		<string>Kenan Wang</string>
+		<string>Kotaro Fujita</string>
+		<string>Kunal Mehta</string>
+		<string>Logan Keller</string>
+		<string>Luiggi Minaya Salcedo</string>
+		<string>MagikCow</string>
+		<string>Marcos Varani</string>
+		<string>Maryana Pinchuk</string>
+		<string>Marina Azevedo</string>
+		<string>Matt Cleinman</string>
+		<string>Max Semenik</string>
+		<string>Maxim Korobov</string>
+		<string>Michael Holloway</string>
+		<string>Michael Hulet</string>
+		<string>Michal Ciurus</string>
+		<string>Mikhail Popov</string>
+		<string>Moiz Syed</string>
+		<string>Monte Hurd</string>
+		<string>Morgan Davison</string>
+		<string>Mun May Tee</string>
+		<string>Natalia Harateh</string>
+		<string>negati-ve</string>
+		<string>Nick DiStefano</string>
+		<string>Nicole Borrelli</string>
+		<string>Niklas Laxström</string>
+		<string>Nirzar Pangarkar</string>
+		<string>Olga Tichonova</string>
+		<string>Oliver Keyes</string>
+		<string>Ori Livneh</string>
+		<string>Pedro Vereza</string>
+		<string>Phil Herbert</string>
+		<string>Prayag Verma</string>
+		<string>Rita Ho</string>
+		<string>Robin Schoenbaechler</string>
+		<string>Rummana Yasmeen</string>
+		<string>Salman Jamil</string>
+		<string>Sam Symons</string>
+		<string>Sandeep Kumar</string>
+		<string>Scott Petit</string>
+		<string>Sean Villalta</string>
+		<string>Sergei Lukoianov</string>
+		<string>Seshadri Mahalingam</string>
+		<string>Shay Nowick</string>
+		<string>Sherah Smith</string>
+		<string>Shilan Patel</string>
+		<string>Siebrand Mazeland</string>
+		<string>Spencer Edgecombe</string>
+		<string>Stephen Niedzielski</string>
+		<string>Steve Peak</string>
+		<string>Steven Schobert</string>
+		<string>Sunil Sharma</string>
+		<string>Thomas PT</string>
+		<string>Tiago Martinho</string>
+		<string>Tim Johnsen</string>
+		<string>Timo Tijhof</string>
+		<string>Tomasz Finc</string>
+		<string>Toni Sevener</string>
+		<string>Vibha Bamba</string>
+		<string>Victor Barrera</string>
+		<string>Victor Peschenkov</string>
+		<string>Viktar Staravoitau</string>
+		<string>waffleboot</string>
+		<string>Yongmin Hong</string>
+		<string>Yuri Solodkin</string>
+		<string>Yuvi Panda</string>
+		<string>Zoran Dori</string>
+	</array>
+</dict>
+</plist>

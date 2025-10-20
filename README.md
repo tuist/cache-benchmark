@@ -87,13 +87,31 @@ Range (min … max):   41.223 s … 47.854 s    3 runs
 
 Mastodon using generated projects.
 
+#### Clean build without caching
+
+https://github.com/tuist/cache-benchmark/actions/runs/18663467398/job/53209251695
+
+```
+Time (mean ± σ):     47.487 s ±  3.627 s    [User: 3.481 s, System: 1.532 s]
+Range (min … max):   44.057 s … 52.392 s    5 runs
+```
+
+#### Clean build with pre-warmed cache (4.88.1)
+
+https://github.com/tuist/cache-benchmark/actions/runs/18663467398/job/53209251728
+
+```
+Time (mean ± σ):     50.771 s ±  7.388 s    [User: 6.163 s, System: 4.415 s]
+Range (min … max):   44.419 s … 63.016 s    5 runs
+```
+
 #### Clean build with local caching
 
 https://github.com/tuist/cache-benchmark/actions/runs/18663006095/job/53207698374
 
 ```
-Time (mean ± σ):     42.941 s ±  0.832 s    [User: 2.991 s, System: 1.330 s]
-Range (min … max):   41.855 s … 44.184 s    5 runs
+Time (mean ± σ):     20.146 s ±  0.351 s    [User: 2.946 s, System: 1.361 s]
+Range (min … max):   19.724 s … 20.696 s    5 runs
 ```
 
 #### Clean build with module cache

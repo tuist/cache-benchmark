@@ -35,7 +35,7 @@ jobs:
 
       - name: Generate project
         working-directory: tuist
-        run: tuist generate
+        run: tuist generate --no-binary-cache
 
       - name: Benchmark clean build with cache uploads
         working-directory: tuist
@@ -76,7 +76,7 @@ jobs:
 
       - name: Generate project
         working-directory: tuist
-        run: tuist generate
+        run: tuist generate --no-binary-cache
 
       - name: Benchmark clean build with pre-warmed cache
         working-directory: tuist
@@ -111,7 +111,7 @@ jobs:
 
       - name: Generate project
         working-directory: tuist
-        run: tuist generate
+        run: tuist generate --no-binary-cache
 
       - name: Benchmark clean build without caching
         working-directory: tuist
@@ -145,7 +145,7 @@ jobs:
 
       - name: Generate project
         working-directory: tuist
-        run: tuist generate
+        run: tuist generate --no-binary-cache
 
       - name: Benchmark clean build with local caching
         working-directory: tuist

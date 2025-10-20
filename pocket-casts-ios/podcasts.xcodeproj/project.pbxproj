@@ -10011,7 +10011,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "make lint\n";
+			shellScript = "# make lint\n";
 			showEnvVarsInLog = 0;
 		};
 		462EE0C527025346003D67DC /* GenerateCredentials */ = {

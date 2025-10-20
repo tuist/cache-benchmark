@@ -1,0 +1,12 @@
+{
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  },
+  "symbols" : [
+    {
+      "filename" : "arrow.2.squarepath.checkmark.svg",
+      "idiom" : "universal"
+    }
+  ]
+}

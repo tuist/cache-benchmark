@@ -1,0 +1,14 @@
+git_url("git@github.com:mastodon/mastodon-ios-match.git")
+storage_mode("git")
+git_branch("main")
+type("appstore") # The default type, can be: appstore, adhoc, enterprise or development
+
+app_identifier([
+  "dev.tuist.mastodon",
+  "dev.tuist.mastodon.MastodonIntent",
+  "dev.tuist.mastodon.NotificationService",
+  "dev.tuist.mastodon.ShareActionExtension",
+  "dev.tuist.mastodon.OpenInActionExtension",
+  "dev.tuist.mastodon.WidgetExtension"
+])
+# username("fastlane@joinmastodon.org")

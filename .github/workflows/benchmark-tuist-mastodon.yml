@@ -1,0 +1,157 @@
+name: Benchmark Mastodon Generated App
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: benchmark-tuist-${{ github.head_ref }}
+  cancel-in-progress: true
+
+jobs:
+  cache-uploads:
+    name: Clean build with cache uploads
+    runs-on: namespace-profile-default-macos
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: jdx/mise-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Authenticate Tuist
+        working-directory: mastodon-tuist-ios
+        run: TUIST_URL="https://staging.tuist.dev" tuist auth login --email tuistrocks@tuist.dev --password ${{ secrets.TUIST_TEST_ACCOUNT_PASSWORD }}
+
+      - name: Setup Tuist Cache
+        working-directory: mastodon-tuist-ios
+        run: tuist setup cache
+
+      - name: Install dependencies
+        working-directory: mastodon-tuist-ios
+        run: tuist install
+
+      - name: Generate project
+        working-directory: mastodon-tuist-ios
+        run: tuist generate --no-binary-cache
+
+      - name: Benchmark clean build with cache uploads
+        working-directory: mastodon-tuist-ios
+        run: |
+          hyperfine --warmup 1 --runs 5 \
+            --prepare 'rm -rf ~/Library/Developer/Xcode/DerivedData && ../tuist-setup-temp-project' \
+            'HANDLE="$(cat .tuist-temp-org)_$(cat .tuist-temp-project)" && xcodebuild -workspace MastodonTuist.xcworkspace -scheme TuistApp build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO COMPILATION_CACHE_ENABLE_CACHING="YES" COMPILATION_CACHE_ENABLE_PLUGIN="YES" COMPILATION_CACHE_REMOTE_SERVICE_PATH="$HOME/.local/state/tuist/$HANDLE.sock"' \
+            --conclude '../tuist-cleanup-temp-project' \
+            --show-output
+
+  pre-warmed:
+    name: Clean build with pre-warmed cache
+    runs-on: namespace-profile-default-macos
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: jdx/mise-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Skip Xcode Macro Fingerprint Validation
+        run: defaults write com.apple.dt.Xcode IDESkipMacroFingerprintValidation -bool YES
+
+      - name: Skip Xcode Package Validation
+        run: defaults write com.apple.dt.Xcode IDESkipPackagePluginFingerprintValidation -bool YES
+
+      - name: Authenticate Tuist
+        working-directory: mastodon-tuist-ios
+        run: TUIST_URL="https://staging.tuist.dev" tuist auth login --email tuistrocks@tuist.dev --password ${{ secrets.TUIST_TEST_ACCOUNT_PASSWORD }}
+
+      - name: Setup Tuist Cache
+        working-directory: mastodon-tuist-ios
+        run: tuist setup cache
+
+      - name: Install dependencies
+        working-directory: mastodon-tuist-ios
+        run: tuist install
+
+      - name: Generate project
+        working-directory: mastodon-tuist-ios
+        run: tuist generate --no-binary-cache
+
+      - name: Benchmark clean build with pre-warmed cache
+        working-directory: mastodon-tuist-ios
+        run: |
+          hyperfine --warmup 1 --runs 5 \
+            --setup 'xcodebuild -workspace MastodonTuist.xcworkspace -scheme TuistApp build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO COMPILATION_CACHE_ENABLE_CACHING="YES" COMPILATION_CACHE_ENABLE_PLUGIN="YES" COMPILATION_CACHE_REMOTE_SERVICE_PATH="$HOME/.local/state/tuist/tuist_tuist.sock"' \
+            --prepare 'rm -rf ~/Library/Developer/Xcode/DerivedData' \
+            'xcodebuild -workspace MastodonTuist.xcworkspace -scheme TuistApp build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO COMPILATION_CACHE_ENABLE_CACHING="YES" COMPILATION_CACHE_ENABLE_PLUGIN="YES" COMPILATION_CACHE_REMOTE_SERVICE_PATH="$HOME/.local/state/tuist/tuist_tuist.sock"' \
+            --show-output
+
+  no-cache:
+    name: Clean build without caching
+    runs-on: namespace-profile-default-macos
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: jdx/mise-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Authenticate Tuist
+        working-directory: mastodon-tuist-ios
+        run: TUIST_URL="https://staging.tuist.dev" tuist auth login --email tuistrocks@tuist.dev --password ${{ secrets.TUIST_TEST_ACCOUNT_PASSWORD }}
+
+      - name: Setup Tuist Cache
+        working-directory: mastodon-tuist-ios
+        run: tuist setup cache
+
+      - name: Install dependencies
+        working-directory: mastodon-tuist-ios
+        run: tuist install
+
+      - name: Generate project
+        working-directory: mastodon-tuist-ios
+        run: tuist generate --no-binary-cache
+
+      - name: Benchmark clean build without caching
+        working-directory: mastodon-tuist-ios
+        run: |
+          hyperfine --warmup 1 --runs 5 \
+            --prepare 'rm -rf ~/Library/Developer/Xcode/DerivedData' \
+            'xcodebuild -workspace MastodonTuist.xcworkspace -scheme TuistApp build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO COMPILATION_CACHE_ENABLE_CACHING=NO' \
+            --show-output
+
+  local-cache:
+    name: Clean build with local caching
+    runs-on: namespace-profile-default-macos
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: jdx/mise-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Authenticate Tuist
+        working-directory: mastodon-tuist-ios
+        run: TUIST_URL="https://staging.tuist.dev" tuist auth login --email tuistrocks@tuist.dev --password ${{ secrets.TUIST_TEST_ACCOUNT_PASSWORD }}
+
+      - name: Setup Tuist Cache
+        working-directory: mastodon-tuist-ios
+        run: tuist setup cache
+
+      - name: Install dependencies
+        working-directory: mastodon-tuist-ios
+        run: tuist install
+
+      - name: Generate project
+        working-directory: mastodon-tuist-ios
+        run: tuist generate --no-binary-cache
+
+      - name: Benchmark clean build with local caching
+        working-directory: mastodon-tuist-ios
+        run: |
+          hyperfine --warmup 1 --runs 5 \
+            --setup 'rm -rf ~/Library/Developer/Xcode/DerivedData' \
+            --prepare 'xcodebuild -workspace MastodonTuist.xcworkspace -scheme TuistApp -destination "generic/platform=macOS" clean' \
+            'xcodebuild -workspace MastodonTuist.xcworkspace -scheme TuistApp build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO COMPILATION_CACHE_ENABLE_CACHING="YES" COMPILATION_CACHE_ENABLE_PLUGIN=NO' \
+            --show-output

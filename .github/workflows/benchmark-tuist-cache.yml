@@ -34,7 +34,7 @@ jobs:
         run: |
           hyperfine --warmup 1 --runs 3 \
             --prepare 'rm -rf ~/Library/Developer/Xcode/DerivedData && tuist clean binaries' \
-            'tuist cache && tuist generate TuistApp && xcodebuild -workspace TuistApp.xcworkspace -scheme TuistApp build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO' \
+            'tuist cache && tuist generate TuistApp && xcodebuild -workspace TuistApp.xcworkspace -scheme TuistApp build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO' \
             --show-output
 
   pre-warmed:
@@ -64,7 +64,7 @@ jobs:
         run: |
           hyperfine --warmup 1 --runs 3 \
             --prepare 'rm -rf ~/Library/Developer/Xcode/DerivedData && tuist clean binaries' \
-            'tuist generate TuistApp && xcodebuild -workspace TuistApp.xcworkspace -scheme TuistApp build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO' \
+            'tuist generate TuistApp && xcodebuild -workspace TuistApp.xcworkspace -scheme TuistApp build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO' \
             --show-output
 
   no-cache:
@@ -90,7 +90,7 @@ jobs:
         run: |
           hyperfine --warmup 1 --runs 3 \
             --prepare 'rm -rf ~/Library/Developer/Xcode/DerivedData && tuist clean binaries' \
-            'tuist generate TuistApp && xcodebuild -workspace TuistApp.xcworkspace -scheme TuistApp build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO' \
+            'tuist generate TuistApp && xcodebuild -workspace TuistApp.xcworkspace -scheme TuistApp build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO' \
             --show-output
 
   local-cache:
@@ -117,5 +117,5 @@ jobs:
           hyperfine --warmup 1 --runs 3 \
             --setup 'tuist cache' \
             --prepare 'rm -rf ~/Library/Developer/Xcode/DerivedData && tuist clean binaries' \
-            'tuist generate TuistApp && xcodebuild -workspace TuistApp.xcworkspace -scheme TuistApp build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO' \
+            'tuist generate TuistApp && xcodebuild -workspace TuistApp.xcworkspace -scheme TuistApp build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO' \
             --show-output

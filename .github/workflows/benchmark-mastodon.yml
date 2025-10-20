@@ -38,7 +38,7 @@ jobs:
         run: |
           hyperfine --warmup 1 --runs 3 \
             --prepare 'rm -rf ~/Library/Developer/Xcode/DerivedData && xcodebuild -project Mastodon.xcodeproj -scheme Mastodon -resolvePackageDependencies && ../tuist-setup-temp-project' \
-            'HANDLE="$(cat .tuist-temp-org)_$(cat .tuist-temp-project)" && xcodebuild -project Mastodon.xcodeproj -scheme Mastodon -destination "platform=iOS Simulator,name=iPhone 17" build COMPILATION_CACHE_REMOTE_SERVICE_PATH="$HOME/.local/state/tuist/$HANDLE.sock"' \
+            'HANDLE="$(cat .tuist-temp-org)_$(cat .tuist-temp-project)" && xcodebuild -project Mastodon.xcodeproj -scheme Mastodon -destination "platform=iOS Simulator,name=iPhone 17" build COMPILATION_CACHE_ENABLE_CACHING="YES" COMPILATION_CACHE_ENABLE_PLUGIN="YES" COMPILATION_CACHE_REMOTE_SERVICE_PATH="$HOME/.local/state/tuist/$HANDLE.sock"' \
             --conclude '../tuist-cleanup-temp-project' \
             --show-output
 
@@ -68,9 +68,9 @@ jobs:
         working-directory: mastodon-ios
         run: |
           hyperfine --warmup 1 --runs 3 \
-            --setup 'xcodebuild -project Mastodon.xcodeproj -scheme Mastodon -destination "platform=iOS Simulator,name=iPhone 17" build' \
+            --setup 'xcodebuild -project Mastodon.xcodeproj -scheme Mastodon -destination "platform=iOS Simulator,name=iPhone 17" build COMPILATION_CACHE_ENABLE_CACHING="YES" COMPILATION_CACHE_ENABLE_PLUGIN="YES" COMPILATION_CACHE_REMOTE_SERVICE_PATH="$HOME/.local/state/tuist/tuist_mastodon.sock"' \
             --prepare 'rm -rf ~/Library/Developer/Xcode/DerivedData && xcodebuild -project Mastodon.xcodeproj -scheme Mastodon -resolvePackageDependencies' \
-            'xcodebuild -project Mastodon.xcodeproj -scheme Mastodon -destination "platform=iOS Simulator,name=iPhone 17" build' \
+            'xcodebuild -project Mastodon.xcodeproj -scheme Mastodon -destination "platform=iOS Simulator,name=iPhone 17" build COMPILATION_CACHE_ENABLE_CACHING="YES" COMPILATION_CACHE_ENABLE_PLUGIN="YES" COMPILATION_CACHE_REMOTE_SERVICE_PATH="$HOME/.local/state/tuist/tuist_mastodon.sock"' \
             --show-output
 
   no-cache:
@@ -131,5 +131,5 @@ jobs:
           hyperfine --warmup 1 --runs 3 \
             --setup 'rm -rf ~/Library/Developer/Xcode/DerivedData' \
             --prepare 'xcodebuild -project Mastodon.xcodeproj -scheme Mastodon -destination "platform=iOS Simulator,name=iPhone 17" clean && xcodebuild -project Mastodon.xcodeproj -scheme Mastodon -resolvePackageDependencies' \
-            'xcodebuild -project Mastodon.xcodeproj -scheme Mastodon -destination "platform=iOS Simulator,name=iPhone 17" build COMPILATION_CACHE_ENABLE_PLUGIN=NO' \
+            'xcodebuild -project Mastodon.xcodeproj -scheme Mastodon -destination "platform=iOS Simulator,name=iPhone 17" build COMPILATION_CACHE_ENABLE_CACHING="YES" COMPILATION_CACHE_ENABLE_PLUGIN=NO' \
             --show-output

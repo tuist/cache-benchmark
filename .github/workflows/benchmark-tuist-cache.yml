@@ -1,4 +1,4 @@
-name: Benchmark Tuist
+name: Benchmark Tuist Cache
 
 on:
   workflow_dispatch:
@@ -7,7 +7,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: benchmark-tuist-${{ github.head_ref }}
+  group: benchmark-tuist-cache-${{ github.head_ref }}
   cancel-in-progress: true
 
 jobs:
@@ -25,25 +25,16 @@ jobs:
         working-directory: tuist
         run: TUIST_URL="https://staging.tuist.dev" tuist auth login --email tuistrocks@tuist.dev --password ${{ secrets.TUIST_TEST_ACCOUNT_PASSWORD }}
 
-      - name: Setup Tuist Cache
-        working-directory: tuist
-        run: tuist setup cache
-
       - name: Install dependencies
         working-directory: tuist
         run: tuist install
-
-      - name: Generate project
-        working-directory: tuist
-        run: tuist generate
 
       - name: Benchmark clean build with cache uploads
         working-directory: tuist
         run: |
           hyperfine --warmup 1 --runs 3 \
-            --prepare 'rm -rf ~/Library/Developer/Xcode/DerivedData && ../tuist-setup-temp-project' \
-            'HANDLE="$(cat .tuist-temp-org)_$(cat .tuist-temp-project)" && xcodebuild -workspace Tuist.xcworkspace -scheme TuistApp build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO COMPILATION_CACHE_ENABLE_CACHING="YES" COMPILATION_CACHE_ENABLE_PLUGIN="YES" COMPILATION_CACHE_REMOTE_SERVICE_PATH="$HOME/.local/state/tuist/$HANDLE.sock"' \
-            --conclude '../tuist-cleanup-temp-project' \
+            --prepare 'rm -rf ~/Library/Developer/Xcode/DerivedData && tuist clean binaries' \
+            'tuist cache && tuist generate TuistApp && xcodebuild -workspace TuistApp.xcworkspace -scheme TuistApp build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO' \
             --show-output
 
   pre-warmed:
@@ -56,35 +47,24 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Skip Xcode Macro Fingerprint Validation
-        run: defaults write com.apple.dt.Xcode IDESkipMacroFingerprintValidation -bool YES
-
-      - name: Skip Xcode Package Validation
-        run: defaults write com.apple.dt.Xcode IDESkipPackagePluginFingerprintValidation -bool YES
-
       - name: Authenticate Tuist
         working-directory: tuist
         run: TUIST_URL="https://staging.tuist.dev" tuist auth login --email tuistrocks@tuist.dev --password ${{ secrets.TUIST_TEST_ACCOUNT_PASSWORD }}
-
-      - name: Setup Tuist Cache
-        working-directory: tuist
-        run: tuist setup cache
 
       - name: Install dependencies
         working-directory: tuist
         run: tuist install
 
-      - name: Generate project
+      - name: Warm cache
         working-directory: tuist
-        run: tuist generate
+        run: tuist cache
 
       - name: Benchmark clean build with pre-warmed cache
         working-directory: tuist
         run: |
           hyperfine --warmup 1 --runs 3 \
-            --setup 'xcodebuild -workspace Tuist.xcworkspace -scheme TuistApp build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO COMPILATION_CACHE_ENABLE_CACHING="YES" COMPILATION_CACHE_ENABLE_PLUGIN="YES" COMPILATION_CACHE_REMOTE_SERVICE_PATH="$HOME/.local/state/tuist/tuist_tuist.sock"' \
-            --prepare 'rm -rf ~/Library/Developer/Xcode/DerivedData' \
-            'xcodebuild -workspace Tuist.xcworkspace -scheme TuistApp build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO COMPILATION_CACHE_ENABLE_CACHING="YES" COMPILATION_CACHE_ENABLE_PLUGIN="YES" COMPILATION_CACHE_REMOTE_SERVICE_PATH="$HOME/.local/state/tuist/tuist_tuist.sock"' \
+            --prepare 'rm -rf ~/Library/Developer/Xcode/DerivedData && tuist clean binaries' \
+            'tuist generate TuistApp && xcodebuild -workspace TuistApp.xcworkspace -scheme TuistApp build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO' \
             --show-output
 
   no-cache:
@@ -101,24 +81,16 @@ jobs:
         working-directory: tuist
         run: TUIST_URL="https://staging.tuist.dev" tuist auth login --email tuistrocks@tuist.dev --password ${{ secrets.TUIST_TEST_ACCOUNT_PASSWORD }}
 
-      - name: Setup Tuist Cache
-        working-directory: tuist
-        run: tuist setup cache
-
       - name: Install dependencies
         working-directory: tuist
         run: tuist install
-
-      - name: Generate project
-        working-directory: tuist
-        run: tuist generate
 
       - name: Benchmark clean build without caching
         working-directory: tuist
         run: |
           hyperfine --warmup 1 --runs 3 \
-            --prepare 'rm -rf ~/Library/Developer/Xcode/DerivedData' \
-            'xcodebuild -workspace Tuist.xcworkspace -scheme TuistApp build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO COMPILATION_CACHE_ENABLE_CACHING=NO' \
+            --prepare 'rm -rf ~/Library/Developer/Xcode/DerivedData && tuist clean binaries' \
+            'tuist generate TuistApp && xcodebuild -workspace TuistApp.xcworkspace -scheme TuistApp build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO' \
             --show-output
 
   local-cache:
@@ -135,23 +107,15 @@ jobs:
         working-directory: tuist
         run: TUIST_URL="https://staging.tuist.dev" tuist auth login --email tuistrocks@tuist.dev --password ${{ secrets.TUIST_TEST_ACCOUNT_PASSWORD }}
 
-      - name: Setup Tuist Cache
-        working-directory: tuist
-        run: tuist setup cache
-
       - name: Install dependencies
         working-directory: tuist
         run: tuist install
-
-      - name: Generate project
-        working-directory: tuist
-        run: tuist generate
 
       - name: Benchmark clean build with local caching
         working-directory: tuist
         run: |
           hyperfine --warmup 1 --runs 3 \
-            --setup 'rm -rf ~/Library/Developer/Xcode/DerivedData' \
-            --prepare 'xcodebuild -workspace Tuist.xcworkspace -scheme TuistApp -destination "generic/platform=macOS" clean' \
-            'xcodebuild -workspace Tuist.xcworkspace -scheme TuistApp build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO COMPILATION_CACHE_ENABLE_CACHING="YES" COMPILATION_CACHE_ENABLE_PLUGIN=NO' \
+            --setup 'tuist cache' \
+            --prepare 'rm -rf ~/Library/Developer/Xcode/DerivedData && tuist clean binaries' \
+            'tuist generate TuistApp && xcodebuild -workspace TuistApp.xcworkspace -scheme TuistApp build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO' \
             --show-output

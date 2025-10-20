@@ -1,0 +1,228 @@
+name: Benchmark Mastodon with Tuist Specific Commit
+
+on:
+  workflow_dispatch:
+    inputs:
+      tuist_commit:
+        description: "Tuist commit SHA to build and benchmark"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: benchmark-mastodon-tuist-commit-${{ github.event.inputs.tuist_commit }}
+  cancel-in-progress: true
+
+jobs:
+  cache-uploads:
+    name: Clean build with cache uploads (Tuist ${{ github.event.inputs.tuist_commit }})
+    runs-on: namespace-profile-default-macos
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: jdx/mise-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Checkout Tuist Repository
+        uses: actions/checkout@v4
+        with:
+          repository: tuist/tuist
+          ref: ${{ github.event.inputs.tuist_commit }}
+          path: tuist-build
+
+      - name: Build Tuist
+        working-directory: tuist-build
+        env:
+          TUIST_CONFIG_TOKEN: ${{ secrets.TUIST_CONFIG_TOKEN }}
+        run: |
+          tuist install
+          tuist generate tuist ProjectDescription
+          DERIVED_DATA_PATH="$PWD/DerivedData"
+          xcodebuild build -workspace Tuist.xcworkspace -scheme ProjectDescription -derivedDataPath "$DERIVED_DATA_PATH"
+          xcodebuild build -workspace Tuist.xcworkspace -scheme tuist -derivedDataPath "$DERIVED_DATA_PATH"
+
+      - name: Copy Built Executable
+        run: |
+          ln -s tuist-build/DerivedData/Build/Products/Debug/tuist ./tuist-built
+
+      - name: Authenticate Tuist
+        working-directory: mastodon-ios
+        run: TUIST_URL="https://staging.tuist.dev" ../tuist-built auth login --email tuistrocks@tuist.dev --password ${{ secrets.TUIST_TEST_ACCOUNT_PASSWORD }}
+
+      - name: Setup Tuist Cache
+        working-directory: mastodon-ios
+        run: ../tuist-built setup cache
+
+      - name: Setup Build Environment
+        working-directory: mastodon-ios
+        run: exec ./.github/scripts/setup.sh
+
+      - name: Benchmark clean build with cache uploads
+        working-directory: mastodon-ios
+        run: |
+          hyperfine --warmup 1 --runs 3 \
+            --prepare 'rm -rf ~/Library/Developer/Xcode/DerivedData && xcodebuild -project Mastodon.xcodeproj -scheme Mastodon -resolvePackageDependencies && ../tuist-setup-temp-project' \
+            'HANDLE="$(cat .tuist-temp-org)_$(cat .tuist-temp-project)" && xcodebuild -project Mastodon.xcodeproj -scheme Mastodon -destination "platform=iOS Simulator,name=iPhone 17" build COMPILATION_CACHE_REMOTE_SERVICE_PATH="$HOME/.local/state/tuist/$HANDLE.sock"' \
+            --conclude '../tuist-cleanup-temp-project' \
+            --show-output
+
+  pre-warmed:
+    name: Clean build with pre-warmed cache (Tuist ${{ github.event.inputs.tuist_commit }})
+    runs-on: namespace-profile-default-macos
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: jdx/mise-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Checkout Tuist Repository
+        uses: actions/checkout@v4
+        with:
+          repository: tuist/tuist
+          ref: ${{ github.event.inputs.tuist_commit }}
+          path: tuist-build
+
+      - name: Build Tuist
+        working-directory: tuist-build
+        env:
+          TUIST_CONFIG_TOKEN: ${{ secrets.TUIST_CONFIG_TOKEN }}
+        run: |
+          tuist install
+          tuist generate tuist ProjectDescription
+          DERIVED_DATA_PATH="$PWD/DerivedData"
+          xcodebuild build -workspace Tuist.xcworkspace -scheme ProjectDescription -derivedDataPath "$DERIVED_DATA_PATH"
+          xcodebuild build -workspace Tuist.xcworkspace -scheme tuist -derivedDataPath "$DERIVED_DATA_PATH"
+
+      - name: Copy Built Executable
+        run: |
+          ln -s tuist-build/DerivedData/Build/Products/Debug/tuist ./tuist-built
+
+      - name: Authenticate Tuist
+        working-directory: mastodon-ios
+        run: TUIST_URL="https://staging.tuist.dev" ../tuist-built auth login --email tuistrocks@tuist.dev --password ${{ secrets.TUIST_TEST_ACCOUNT_PASSWORD }}
+
+      - name: Setup Tuist Cache
+        working-directory: mastodon-ios
+        run: ../tuist-built setup cache
+
+      - name: Setup Build Environment
+        working-directory: mastodon-ios
+        run: exec ./.github/scripts/setup.sh
+
+      - name: Benchmark clean build with pre-warmed cache
+        working-directory: mastodon-ios
+        run: |
+          hyperfine --warmup 1 --runs 3 \
+            --setup 'xcodebuild -project Mastodon.xcodeproj -scheme Mastodon -destination "platform=iOS Simulator,name=iPhone 17" build' \
+            --prepare 'rm -rf ~/Library/Developer/Xcode/DerivedData && xcodebuild -project Mastodon.xcodeproj -scheme Mastodon -resolvePackageDependencies' \
+            'xcodebuild -project Mastodon.xcodeproj -scheme Mastodon -destination "platform=iOS Simulator,name=iPhone 17" build' \
+            --show-output
+
+  no-cache:
+    name: Clean build without caching (Tuist ${{ github.event.inputs.tuist_commit }})
+    runs-on: namespace-profile-default-macos
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: jdx/mise-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Checkout Tuist Repository
+        uses: actions/checkout@v4
+        with:
+          repository: tuist/tuist
+          ref: ${{ github.event.inputs.tuist_commit }}
+          path: tuist-build
+
+      - name: Build Tuist
+        working-directory: tuist-build
+        env:
+          TUIST_CONFIG_TOKEN: ${{ secrets.TUIST_CONFIG_TOKEN }}
+        run: |
+          tuist install
+          tuist generate tuist ProjectDescription
+          DERIVED_DATA_PATH="$PWD/DerivedData"
+          xcodebuild build -workspace Tuist.xcworkspace -scheme ProjectDescription -derivedDataPath "$DERIVED_DATA_PATH"
+          xcodebuild build -workspace Tuist.xcworkspace -scheme tuist -derivedDataPath "$DERIVED_DATA_PATH"
+
+      - name: Copy Built Executable
+        run: |
+          ln -s tuist-build/DerivedData/Build/Products/Debug/tuist ./tuist-built
+
+      - name: Authenticate Tuist
+        working-directory: mastodon-ios
+        run: TUIST_URL="https://staging.tuist.dev" ../tuist-built auth login --email tuistrocks@tuist.dev --password ${{ secrets.TUIST_TEST_ACCOUNT_PASSWORD }}
+
+      - name: Setup Tuist Cache
+        working-directory: mastodon-ios
+        run: ../tuist-built setup cache
+
+      - name: Setup Build Environment
+        working-directory: mastodon-ios
+        run: exec ./.github/scripts/setup.sh
+
+      - name: Benchmark clean build without caching
+        working-directory: mastodon-ios
+        run: |
+          hyperfine --warmup 1 --runs 3 \
+            --prepare 'rm -rf ~/Library/Developer/Xcode/DerivedData && xcodebuild -project Mastodon.xcodeproj -scheme Mastodon -resolvePackageDependencies' \
+            'xcodebuild -project Mastodon.xcodeproj -scheme Mastodon -destination "platform=iOS Simulator,name=iPhone 17" build COMPILATION_CACHE_ENABLE_CACHING=NO' \
+            --show-output
+
+  local-cache:
+    name: Clean build with local caching (Tuist ${{ github.event.inputs.tuist_commit }})
+    runs-on: namespace-profile-default-macos
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: jdx/mise-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Checkout Tuist Repository
+        uses: actions/checkout@v4
+        with:
+          repository: tuist/tuist
+          ref: ${{ github.event.inputs.tuist_commit }}
+          path: tuist-build
+
+      - name: Build Tuist
+        working-directory: tuist-build
+        env:
+          TUIST_CONFIG_TOKEN: ${{ secrets.TUIST_CONFIG_TOKEN }}
+        run: |
+          tuist install
+          tuist generate tuist ProjectDescription
+          DERIVED_DATA_PATH="$PWD/DerivedData"
+          xcodebuild build -workspace Tuist.xcworkspace -scheme ProjectDescription -derivedDataPath "$DERIVED_DATA_PATH"
+          xcodebuild build -workspace Tuist.xcworkspace -scheme tuist -derivedDataPath "$DERIVED_DATA_PATH"
+
+      - name: Copy Built Executable
+        run: |
+          ln -s tuist-build/DerivedData/Build/Products/Debug/tuist ./tuist-built
+
+      - name: Authenticate Tuist
+        working-directory: mastodon-ios
+        run: TUIST_URL="https://staging.tuist.dev" ../tuist-built auth login --email tuistrocks@tuist.dev --password ${{ secrets.TUIST_TEST_ACCOUNT_PASSWORD }}
+
+      - name: Setup Tuist Cache
+        working-directory: mastodon-ios
+        run: ../tuist-built setup cache
+
+      - name: Setup Build Environment
+        working-directory: mastodon-ios
+        run: exec ./.github/scripts/setup.sh
+
+      - name: Benchmark clean build with local caching
+        working-directory: mastodon-ios
+        run: |
+          hyperfine --warmup 1 --runs 3 \
+            --setup 'rm -rf ~/Library/Developer/Xcode/DerivedData' \
+            --prepare 'xcodebuild -project Mastodon.xcodeproj -scheme Mastodon -destination "platform=iOS Simulator,name=iPhone 17" clean && xcodebuild -project Mastodon.xcodeproj -scheme Mastodon -resolvePackageDependencies' \
+            'xcodebuild -project Mastodon.xcodeproj -scheme Mastodon -destination "platform=iOS Simulator,name=iPhone 17" build COMPILATION_CACHE_ENABLE_PLUGIN=NO' \
+            --show-output

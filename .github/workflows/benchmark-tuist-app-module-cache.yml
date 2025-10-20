@@ -1,4 +1,4 @@
-name: Benchmark Tuist Cache
+name: Benchmark Tuist App Module Cache
 
 on:
   workflow_dispatch:

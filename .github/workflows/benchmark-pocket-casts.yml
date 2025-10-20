@@ -14,7 +14,7 @@ jobs:
   cache-uploads:
     name: Clean build with cache uploads
     runs-on: namespace-profile-default-macos
-    timeout-minutes: 20
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
       - uses: jdx/mise-action@v2
@@ -48,7 +48,7 @@ jobs:
   pre-warmed:
     name: Clean build with pre-warmed cache
     runs-on: namespace-profile-default-macos
-    timeout-minutes: 20
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
       - uses: jdx/mise-action@v2
@@ -82,7 +82,7 @@ jobs:
   no-cache:
     name: Clean build without caching
     runs-on: namespace-profile-default-macos
-    timeout-minutes: 20
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
       - uses: jdx/mise-action@v2
@@ -115,7 +115,7 @@ jobs:
   local-cache:
     name: Clean build with local caching
     runs-on: namespace-profile-default-macos
-    timeout-minutes: 20
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
       - uses: jdx/mise-action@v2

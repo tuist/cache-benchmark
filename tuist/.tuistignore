@@ -1,0 +1,5 @@
+.build
+docs
+cli/Fixtures
+cli/Sources/ProjectDescription
+cli/Tests

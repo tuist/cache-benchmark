@@ -7,7 +7,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: benchmark-tuist-${{ github.head_ref }}
+  group: benchmark-tuist-app-${{ github.head_ref }}
   cancel-in-progress: true
 
 jobs:

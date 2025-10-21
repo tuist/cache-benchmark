@@ -174,49 +174,49 @@ Range (min … max):   155.411 s … 177.266 s    3 runs
 
 #### Clean build with pre-warmed cache (4.88.1)
 
-https://github.com/tuist/cache-benchmark/actions/runs/18661646098/job/53203291954
+https://github.com/tuist/cache-benchmark/actions/runs/18652147920/job/53172446664
 
 ```
-Time (mean ± σ):     195.473 s ± 11.793 s    [User: 28.620 s, System: 16.490 s]
-Range (min … max):   184.202 s … 207.726 s    3 runs
+Time (mean ± σ):     136.782 s ± 10.858 s    [User: 28.302 s, System: 15.671 s]
+Range (min … max):   125.540 s … 147.210 s    3 runs
 ```
 
 #### Clean build with local caching
 
-https://github.com/tuist/cache-benchmark/actions/runs/18661646098/job/53205488586
+https://github.com/tuist/cache-benchmark/actions/runs/18652147920/job/53172446706
 
 ```
-Time (mean ± σ):     111.316 s ±  8.637 s    [User: 22.217 s, System: 9.501 s]
-Range (min … max):   104.142 s … 120.903 s    3 runs
+Time (mean ± σ):     108.634 s ±  4.827 s    [User: 22.317 s, System: 9.123 s]
+Range (min … max):   104.639 s … 113.997 s    3 runs
 ```
 
 ### wikipedia-ios
 
 #### Clean build without caching
 
-https://github.com/tuist/cache-benchmark/actions/runs/18652412501/job/53173274935
+https://github.com/tuist/cache-benchmark/actions/runs/18675431659/job/53244336304
 
 ```
-Time (mean ± σ):     66.954 s ±  0.143 s    [User: 4.539 s, System: 1.857 s]
-Range (min … max):   66.831 s … 67.111 s    3 runs
+Time (mean ± σ):     69.328 s ±  2.320 s    [User: 4.730 s, System: 2.041 s]
+Range (min … max):   67.065 s … 71.702 s    3 runs
 ```
 
 #### Clean build with pre-warmed cache (4.88.1)
 
-https://github.com/tuist/cache-benchmark/actions/runs/18652412501/job/53173274960
+https://github.com/tuist/cache-benchmark/actions/runs/18675431659/job/53244336273
 
 ```
-Time (mean ± σ):     65.291 s ±  3.015 s    [User: 6.744 s, System: 4.126 s]
-Range (min … max):   62.603 s … 68.551 s    3 runs
+Time (mean ± σ):     57.691 s ±  1.594 s    [User: 6.220 s, System: 3.921 s]
+Range (min … max):   55.993 s … 59.154 s    3 runs
 ```
 
 #### Clean build with local caching
 
-https://github.com/tuist/cache-benchmark/actions/runs/18652412501/job/53173274957
+https://github.com/tuist/cache-benchmark/actions/runs/18675431659/job/53244336321
 
 ```
-Time (mean ± σ):     51.520 s ±  0.600 s    [User: 3.882 s, System: 1.621 s]
-Range (min … max):   50.828 s … 51.886 s    3 runs
+Time (mean ± σ):     53.072 s ±  1.253 s    [User: 3.979 s, System: 1.731 s]
+Range (min … max):   51.648 s … 54.010 s    3 runs
 ```
 
 ## Running Locally

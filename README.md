@@ -89,29 +89,29 @@ Mastodon using generated projects.
 
 #### Clean build without caching
 
-https://github.com/tuist/cache-benchmark/actions/runs/18663467398/job/53209251695
+https://github.com/tuist/cache-benchmark/actions/runs/18678254368/job/53253116480
 
 ```
-Time (mean ± σ):     47.487 s ±  3.627 s    [User: 3.481 s, System: 1.532 s]
-Range (min … max):   44.057 s … 52.392 s    5 runs
+Time (mean ± σ):     51.485 s ±  2.292 s    [User: 3.869 s, System: 1.774 s]
+Range (min … max):   48.588 s … 54.436 s    5 runs
 ```
 
 #### Clean build with pre-warmed cache (4.88.1)
 
-https://github.com/tuist/cache-benchmark/actions/runs/18663467398/job/53209251728
+https://github.com/tuist/cache-benchmark/actions/runs/18678254368/job/53253116462
 
 ```
-Time (mean ± σ):     50.771 s ±  7.388 s    [User: 6.163 s, System: 4.415 s]
-Range (min … max):   44.419 s … 63.016 s    5 runs
+Time (mean ± σ):     28.452 s ±  2.156 s    [User: 5.103 s, System: 3.656 s]
+Range (min … max):   26.537 s … 31.762 s    5 runs
 ```
 
 #### Clean build with local caching
 
-https://github.com/tuist/cache-benchmark/actions/runs/18663006095/job/53207698374
+https://github.com/tuist/cache-benchmark/actions/runs/18678254368/job/53253116489
 
 ```
-Time (mean ± σ):     20.146 s ±  0.351 s    [User: 2.946 s, System: 1.361 s]
-Range (min … max):   19.724 s … 20.696 s    5 runs
+Time (mean ± σ):     21.630 s ±  0.247 s    [User: 3.502 s, System: 1.599 s]
+Range (min … max):   21.328 s … 21.959 s    5 runs
 ```
 
 #### Clean build with module cache
@@ -136,20 +136,20 @@ Range (min … max):   106.024 s … 113.082 s    5 runs
 
 #### Clean build with pre-warmed cache (4.88.1)
 
-https://github.com/tuist/cache-benchmark/actions/runs/18661637531/job/53203264725
+https://github.com/tuist/cache-benchmark/actions/runs/18678245064/job/53253086378
 
 ```
-Time (mean ± σ):     110.166 s ± 16.402 s    [User: 12.010 s, System: 8.855 s]
-Range (min … max):   94.206 s … 133.653 s    5 runs
+Time (mean ± σ):     59.447 s ±  3.086 s    [User: 11.344 s, System: 8.449 s]
+Range (min … max):   56.276 s … 63.313 s    5 runs
 ```
 
 #### Clean build with local caching
 
-https://github.com/tuist/cache-benchmark/actions/runs/18661637531/job/53203264757
+https://github.com/tuist/cache-benchmark/actions/runs/18678245064/job/53253086402
 
 ```
-Time (mean ± σ):     33.746 s ±  2.287 s    [User: 7.376 s, System: 4.023 s]
-Range (min … max):   31.384 s … 36.950 s    5 runs
+Time (mean ± σ):     37.600 s ±  3.387 s    [User: 8.455 s, System: 4.779 s]
+Range (min … max):   33.375 s … 40.504 s    5 runs
 ```
 
 #### Module cache using generated projects
@@ -159,6 +159,44 @@ https://github.com/tuist/cache-benchmark/actions/runs/18661639514/job/5320327008
 ```
 Time (mean ± σ):     34.936 s ±  3.437 s    [User: 32.681 s, System: 6.891 s]
 Range (min … max):   30.482 s … 39.250 s    5 runs
+```
+
+### Tuist App
+
+#### Clean build without caching
+
+https://github.com/tuist/cache-benchmark/actions/runs/18677113072/job/53249420000
+
+```
+Time (mean ± σ):     68.049 s ±  1.212 s    [User: 4.795 s, System: 2.214 s]
+Range (min … max):   66.195 s … 69.141 s    5 runs
+```
+
+#### Clean build with pre-warmed cache (4.88.1)
+
+https://github.com/tuist/cache-benchmark/actions/runs/18677113072/job/53249420046
+
+```
+Time (mean ± σ):     43.661 s ±  4.253 s    [User: 7.639 s, System: 5.471 s]
+Range (min … max):   38.467 s … 49.799 s    5 runs
+```
+
+#### Clean build with local cache
+
+https://github.com/tuist/cache-benchmark/actions/runs/18677113072/job/53249420041
+
+```
+Time (mean ± σ):     25.761 s ±  1.458 s    [User: 5.586 s, System: 2.851 s]
+Range (min … max):   23.781 s … 27.843 s    5 runs
+```
+
+#### Module cache
+
+https://github.com/tuist/cache-benchmark/actions/runs/18676750661/job/53248258692
+
+```
+Time (mean ± σ):     28.080 s ±  1.936 s    [User: 25.013 s, System: 5.313 s]
+Range (min … max):   24.976 s … 30.125 s    5 runs
 ```
 
 ###  pocket-casts-ios

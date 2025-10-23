@@ -1,0 +1,125 @@
+name: Benchmark Pocket Casts with Tuist Commit
+
+on:
+  workflow_dispatch:
+    inputs:
+      tuist_commit:
+        description: "Tuist commit SHA to build and benchmark"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: benchmark-pocket-casts-tuist-${{ github.event.inputs.tuist_commit }}
+  cancel-in-progress: true
+
+jobs:
+  cache-uploads:
+    name: Clean build with cache uploads (Tuist ${{ github.event.inputs.tuist_commit }})
+    runs-on: namespace-profile-default-macos
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: jdx/mise-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Checkout Tuist Repository
+        uses: actions/checkout@v4
+        with:
+          repository: tuist/tuist
+          ref: ${{ github.event.inputs.tuist_commit }}
+          path: tuist-build
+
+      - name: Build Tuist
+        working-directory: tuist-build
+        env:
+          TUIST_CONFIG_TOKEN: ${{ secrets.TUIST_CONFIG_TOKEN }}
+        run: |
+          tuist install
+          tuist generate tuist ProjectDescription
+          DERIVED_DATA_PATH="$PWD/DerivedData"
+          xcodebuild build -workspace Tuist.xcworkspace -scheme ProjectDescription -derivedDataPath "$DERIVED_DATA_PATH"
+          xcodebuild build -workspace Tuist.xcworkspace -scheme tuist -derivedDataPath "$DERIVED_DATA_PATH"
+
+      - name: Copy Built Executable
+        run: |
+          ln -s tuist-build/DerivedData/Build/Products/Debug/tuist ./tuist-built
+
+      - name: Authenticate Tuist
+        working-directory: pocket-casts-ios
+        run: TUIST_URL="https://staging.tuist.dev" ../tuist-built auth login --email tuistrocks@tuist.dev --password ${{ secrets.TUIST_TEST_ACCOUNT_PASSWORD }}
+
+      - name: Install Dependencies
+        working-directory: pocket-casts-ios
+        run: |
+          gem install bundler
+          bundle install
+          make install_dependencies
+
+      - name: Benchmark clean build with cache uploads
+        working-directory: pocket-casts-ios
+        run: |
+          hyperfine --warmup 1 --runs 3 \
+            --prepare 'rm -rf ~/Library/Developer/Xcode/DerivedData && xcodebuild -project podcasts.xcodeproj -scheme pocketcasts -resolvePackageDependencies && ../tuist-setup-temp-project && ../tuist-built setup cache' \
+            'HANDLE="$(cat .tuist-temp-org)_$(cat .tuist-temp-project)" && xcodebuild -project podcasts.xcodeproj -scheme pocketcasts -destination "platform=iOS Simulator,name=iPhone 17" build SWIFT_ENABLE_COMPILE_CACHE="YES" SWIFT_ENABLE_EXPLICIT_MODULES="YES" SWIFT_USE_INTEGRATED_DRIVER="YES" CLANG_ENABLE_COMPILE_CACHE="YES" CLANG_ENABLE_MODULES="YES" COMPILATION_CACHE_ENABLE_INTEGRATED_QUERIES="YES" COMPILATION_CACHE_ENABLE_DIAGNOSTIC_REMARKS="YES" COMPILATION_CACHE_ENABLE_CACHING="YES" COMPILATION_CACHE_ENABLE_PLUGIN="YES" COMPILATION_CACHE_REMOTE_SERVICE_PATH="$HOME/.local/state/tuist/$HANDLE.sock"' \
+            --conclude '../tuist-cleanup-temp-project' \
+            --show-output
+
+  pre-warmed:
+    name: Clean build with pre-warmed cache (Tuist ${{ github.event.inputs.tuist_commit }})
+    runs-on: namespace-profile-default-macos
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: jdx/mise-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Checkout Tuist Repository
+        uses: actions/checkout@v4
+        with:
+          repository: tuist/tuist
+          ref: ${{ github.event.inputs.tuist_commit }}
+          path: tuist-build
+
+      - name: Build Tuist
+        working-directory: tuist-build
+        env:
+          TUIST_CONFIG_TOKEN: ${{ secrets.TUIST_CONFIG_TOKEN }}
+        run: |
+          tuist install
+          tuist generate tuist ProjectDescription
+          DERIVED_DATA_PATH="$PWD/DerivedData"
+          xcodebuild build -workspace Tuist.xcworkspace -scheme ProjectDescription -derivedDataPath "$DERIVED_DATA_PATH"
+          xcodebuild build -workspace Tuist.xcworkspace -scheme tuist -derivedDataPath "$DERIVED_DATA_PATH"
+
+      - name: Copy Built Executable
+        run: |
+          ln -s tuist-build/DerivedData/Build/Products/Debug/tuist ./tuist-built
+
+      - name: Authenticate Tuist
+        working-directory: pocket-casts-ios
+        run: TUIST_URL="https://staging.tuist.dev" ../tuist-built auth login --email tuistrocks@tuist.dev --password ${{ secrets.TUIST_TEST_ACCOUNT_PASSWORD }}
+
+      - name: Setup Tuist Cache
+        working-directory: pocket-casts-ios
+        run: ../tuist-built setup cache
+
+      - name: Install Dependencies
+        working-directory: pocket-casts-ios
+        run: |
+          gem install bundler
+          bundle install
+          make install_dependencies
+
+      - name: Benchmark clean build with pre-warmed cache
+        working-directory: pocket-casts-ios
+        run: |
+          hyperfine --warmup 1 --runs 3 \
+            --setup 'xcodebuild -project podcasts.xcodeproj -scheme pocketcasts -destination "platform=iOS Simulator,name=iPhone 17" build SWIFT_ENABLE_COMPILE_CACHE="YES" SWIFT_ENABLE_EXPLICIT_MODULES="YES" SWIFT_USE_INTEGRATED_DRIVER="YES" CLANG_ENABLE_COMPILE_CACHE="YES" CLANG_ENABLE_MODULES="YES" COMPILATION_CACHE_ENABLE_INTEGRATED_QUERIES="YES" COMPILATION_CACHE_ENABLE_DIAGNOSTIC_REMARKS="YES" COMPILATION_CACHE_ENABLE_CACHING="YES" COMPILATION_CACHE_ENABLE_PLUGIN="YES" COMPILATION_CACHE_REMOTE_SERVICE_PATH="$HOME/.local/state/tuist/tuist_pocket-casts.sock"' \
+            --prepare 'rm -rf ~/Library/Developer/Xcode/DerivedData && xcodebuild -project podcasts.xcodeproj -scheme pocketcasts -resolvePackageDependencies' \
+            'xcodebuild -project podcasts.xcodeproj -scheme pocketcasts -destination "platform=iOS Simulator,name=iPhone 17" build SWIFT_ENABLE_COMPILE_CACHE="YES" SWIFT_ENABLE_EXPLICIT_MODULES="YES" SWIFT_USE_INTEGRATED_DRIVER="YES" CLANG_ENABLE_COMPILE_CACHE="YES" CLANG_ENABLE_MODULES="YES" COMPILATION_CACHE_ENABLE_INTEGRATED_QUERIES="YES" COMPILATION_CACHE_ENABLE_DIAGNOSTIC_REMARKS="YES" COMPILATION_CACHE_ENABLE_CACHING="YES" COMPILATION_CACHE_ENABLE_PLUGIN="YES" COMPILATION_CACHE_REMOTE_SERVICE_PATH="$HOME/.local/state/tuist/tuist_pocket-casts.sock"' \
+            --show-output

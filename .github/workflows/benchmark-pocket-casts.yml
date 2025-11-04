@@ -23,7 +23,7 @@ jobs:
 
       - name: Authenticate Tuist
         working-directory: pocket-casts-ios
-        run: TUIST_URL="https://staging.tuist.dev" tuist auth login --email tuistrocks@tuist.dev --password ${{ secrets.TUIST_TEST_ACCOUNT_PASSWORD }}
+        run: TUIST_URL="https://tuist.dev" tuist auth login --email tuistrocks@tuist.dev --password ${{ secrets.TUIST_TEST_ACCOUNT_PASSWORD }}
 
       - name: Install Dependencies
         working-directory: pocket-casts-ios
@@ -61,7 +61,7 @@ jobs:
 
       - name: Authenticate Tuist
         working-directory: pocket-casts-ios
-        run: TUIST_URL="https://staging.tuist.dev" tuist auth login --email tuistrocks@tuist.dev --password ${{ secrets.TUIST_TEST_ACCOUNT_PASSWORD }}
+        run: TUIST_URL="https://tuist.dev" tuist auth login --email tuistrocks@tuist.dev --password ${{ secrets.TUIST_TEST_ACCOUNT_PASSWORD }}
 
       - name: Setup Tuist Cache
         working-directory: pocket-casts-ios
@@ -103,7 +103,7 @@ jobs:
 
       - name: Authenticate Tuist
         working-directory: pocket-casts-ios
-        run: TUIST_URL="https://staging.tuist.dev" tuist auth login --email tuistrocks@tuist.dev --password ${{ secrets.TUIST_TEST_ACCOUNT_PASSWORD }}
+        run: TUIST_URL="https://tuist.dev" tuist auth login --email tuistrocks@tuist.dev --password ${{ secrets.TUIST_TEST_ACCOUNT_PASSWORD }}
 
       - name: Setup Tuist Cache
         working-directory: pocket-casts-ios
@@ -144,7 +144,7 @@ jobs:
 
       - name: Authenticate Tuist
         working-directory: pocket-casts-ios
-        run: TUIST_URL="https://staging.tuist.dev" tuist auth login --email tuistrocks@tuist.dev --password ${{ secrets.TUIST_TEST_ACCOUNT_PASSWORD }}
+        run: TUIST_URL="https://tuist.dev" tuist auth login --email tuistrocks@tuist.dev --password ${{ secrets.TUIST_TEST_ACCOUNT_PASSWORD }}
 
       - name: Setup Tuist Cache
         working-directory: pocket-casts-ios

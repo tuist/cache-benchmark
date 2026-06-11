@@ -9,6 +9,12 @@
 # targeted environment.
 name: Kura throughput benchmark
 on:
+  # Push trigger lets the benchmark run from this branch without
+  # waiting for a merge to main (dispatch only sees workflows on the
+  # default branch). Scoped to the benchmark branch so ordinary repo
+  # pushes don't fire 200MB transfer jobs.
+  push:
+    branches: [kura-throughput-benchmark]
   workflow_dispatch:
     inputs:
       private_url:
@@ -35,14 +41,16 @@ on:
 
 jobs:
   bench:
-    runs-on: ${{ inputs.runner }}
+    runs-on: ${{ inputs.runner || 'shape-linux-2vcpu-8gb' }}
     timeout-minutes: 30
     env:
       TOKEN: ${{ secrets.TUIST_BENCH_TOKEN }}
-      TENANT: ${{ inputs.tenant_id }}
-      NAMESPACE: ${{ inputs.namespace_id }}
-      SIZE_MB: ${{ inputs.size_mb }}
-      ITERATIONS: ${{ inputs.iterations }}
+      TENANT: ${{ inputs.tenant_id || 'marek' }}
+      NAMESPACE: ${{ inputs.namespace_id || 'tuist' }}
+      SIZE_MB: ${{ inputs.size_mb || '200' }}
+      ITERATIONS: ${{ inputs.iterations || '3' }}
+      PRIVATE_URL: ${{ inputs.private_url || 'http://kura-marek-staging.kura.svc.cluster.local:4000' }}
+      PUBLIC_URL: ${{ inputs.public_url || '' }}
     steps:
       - name: Generate artifact
         run: |
@@ -91,9 +99,9 @@ jobs:
             echo "::endgroup::"
           }
 
-          bench_endpoint private "${{ inputs.private_url }}"
-          if [ -n "${{ inputs.public_url }}" ]; then
-            bench_endpoint public "${{ inputs.public_url }}"
+          bench_endpoint private "$PRIVATE_URL"
+          if [ -n "$PUBLIC_URL" ]; then
+            bench_endpoint public "$PUBLIC_URL"
           fi
       - name: Summary
         run: |

@@ -1,0 +1,105 @@
+# Measures bulk upload/download throughput against Kura cache nodes
+# from inside a Tuist runner, using the same module multipart flow the
+# CLI uses for binary artifacts.
+#
+# Designed for path A/B comparisons (e.g. public ingress vs in-cluster
+# Service URL of the same node). Leave `public_url` empty to measure a
+# single endpoint. The `TUIST_BENCH_TOKEN` repository secret must hold
+# a token whose grants cover `<tenant_id>/<namespace_id>` on the
+# targeted environment.
+name: Kura throughput benchmark
+on:
+  workflow_dispatch:
+    inputs:
+      private_url:
+        description: In-cluster Kura base URL
+        default: "http://kura-marek-staging.kura.svc.cluster.local:4000"
+      public_url:
+        description: Public Kura base URL for the same tenant (empty = skip)
+        default: ""
+      tenant_id:
+        description: Account handle the token is granted for
+        default: "marek"
+      namespace_id:
+        description: Project handle under the tenant
+        default: "tuist"
+      size_mb:
+        description: Artifact size in MB
+        default: "200"
+      iterations:
+        description: Upload/download cycles per endpoint
+        default: "3"
+      runner:
+        description: runs-on label (staging fleet = shape-linux-2vcpu-8gb)
+        default: "shape-linux-2vcpu-8gb"
+
+jobs:
+  bench:
+    runs-on: ${{ inputs.runner }}
+    timeout-minutes: 30
+    env:
+      TOKEN: ${{ secrets.TUIST_BENCH_TOKEN }}
+      TENANT: ${{ inputs.tenant_id }}
+      NAMESPACE: ${{ inputs.namespace_id }}
+      SIZE_MB: ${{ inputs.size_mb }}
+      ITERATIONS: ${{ inputs.iterations }}
+    steps:
+      - name: Generate artifact
+        run: |
+          head -c "$((SIZE_MB * 1024 * 1024))" /dev/urandom > /tmp/blob.bin
+          ls -l /tmp/blob.bin
+      - name: Benchmark
+        run: |
+          set -u
+          AUTH="Authorization: Bearer $TOKEN"
+          NSQ="tenant_id=$TENANT&namespace_id=$NAMESPACE"
+
+          bench_endpoint() { # $1=label $2=base_url
+            local label="$1" base="$2"
+            echo "::group::$label ($base)"
+            for i in $(seq 1 "$ITERATIONS"); do
+              local hash="bench-${GITHUB_RUN_ID}-${label}-${i}"
+              local name="blob"
+              local modq="$NSQ&cache_category=builds&hash=$hash&name=$name"
+
+              local upload_id
+              upload_id=$(curl -sf -X POST -H "$AUTH" \
+                "$base/api/cache/module/start?$modq" | jq -r '.upload_id')
+              if [ -z "$upload_id" ] || [ "$upload_id" = "null" ]; then
+                echo "$label#$i START FAILED"; continue
+              fi
+
+              local part up_speed etag
+              part=$(curl -sf -X POST -H "$AUTH" --data-binary @/tmp/blob.bin \
+                -w '\n%{speed_upload}' \
+                "$base/api/cache/module/part?$modq&upload_id=$upload_id&part_number=1")
+              up_speed=$(echo "$part" | tail -1)
+              etag=$(echo "$part" | head -1 | jq -r '.etag // empty')
+              if [ -z "$etag" ]; then echo "$label#$i PART FAILED: $(echo "$part" | head -1)"; continue; fi
+
+              curl -sf -X POST -H "$AUTH" -H 'Content-Type: application/json' \
+                -d "{\"parts\":[{\"part_number\":1,\"etag\":\"$etag\"}]}" \
+                "$base/api/cache/module/complete?$NSQ&upload_id=$upload_id" > /dev/null \
+                || { echo "$label#$i COMPLETE FAILED"; continue; }
+
+              local down
+              down=$(curl -sf -H "$AUTH" -o /dev/null \
+                -w '%{speed_download} %{time_total} %{http_code}' \
+                "$base/api/cache/module/$name?$modq")
+              echo "$label iter=$i upload_MBps=$(awk "BEGIN{printf \"%.1f\", $up_speed/1048576}") download_MBps=$(awk "BEGIN{printf \"%.1f\", $(echo "$down" | cut -d' ' -f1)/1048576}") download_s=$(echo "$down" | cut -d' ' -f2) http=$(echo "$down" | cut -d' ' -f3)" | tee -a /tmp/results.txt
+            done
+            echo "::endgroup::"
+          }
+
+          bench_endpoint private "${{ inputs.private_url }}"
+          if [ -n "${{ inputs.public_url }}" ]; then
+            bench_endpoint public "${{ inputs.public_url }}"
+          fi
+      - name: Summary
+        run: |
+          {
+            echo "## Kura throughput — ${SIZE_MB}MB × ${ITERATIONS} iterations"
+            echo '```'
+            cat /tmp/results.txt 2>/dev/null || echo "no results"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"

@@ -77,16 +77,26 @@ jobs:
                 echo "$label#$i START FAILED"; continue
               fi
 
-              local part up_speed etag
-              part=$(curl -sf -X POST -H "$AUTH" --data-binary @/tmp/blob.bin \
-                -w '\n%{speed_upload}' \
-                "$base/api/cache/module/part?$modq&upload_id=$upload_id&part_number=1")
-              up_speed=$(echo "$part" | tail -1)
-              etag=$(echo "$part" | head -1 | jq -r '.etag // empty')
-              if [ -z "$etag" ]; then echo "$label#$i PART FAILED: $(echo "$part" | head -1)"; continue; fi
+              # Parts are capped at 10MB (MAX_MODULE_PART_BYTES) and the
+              # part response is a bare 204 — complete takes the part
+              # numbers, not etags (CompleteMultipartRequest.parts: Vec<u32>).
+              local nparts=$(( (SIZE_MB + 9) / 10 ))
+              local p=1 t_up=0 parts="" out code t fail=0
+              while [ "$p" -le "$nparts" ]; do
+                dd if=/tmp/blob.bin of=/tmp/part.bin bs=1M skip=$(( (p-1)*10 )) count=10 2>/dev/null
+                out=$(curl -s -o /dev/null -X POST -H "$AUTH" --data-binary @/tmp/part.bin \
+                  -w '%{http_code} %{time_total}' \
+                  "$base/api/cache/module/part?$modq&upload_id=$upload_id&part_number=$p") || { fail=1; break; }
+                code=${out%% *}; t=${out##* }
+                { [ "$code" != "204" ] && [ "$code" != "200" ]; } && { fail=$code; break; }
+                t_up=$(awk "BEGIN{print $t_up+$t}")
+                parts="$parts$p,"
+                p=$((p+1))
+              done
+              if [ "$fail" != "0" ]; then echo "$label#$i PART FAILED ($fail) at part $p"; continue; fi
 
               curl -sf -X POST -H "$AUTH" -H 'Content-Type: application/json' \
-                -d "{\"parts\":[{\"part_number\":1,\"etag\":\"$etag\"}]}" \
+                -d "{\"parts\":[${parts%,}]}" \
                 "$base/api/cache/module/complete?$NSQ&upload_id=$upload_id" > /dev/null \
                 || { echo "$label#$i COMPLETE FAILED"; continue; }
 
@@ -94,7 +104,7 @@ jobs:
               down=$(curl -sf -H "$AUTH" -o /dev/null \
                 -w '%{speed_download} %{time_total} %{http_code}' \
                 "$base/api/cache/module/$name?$modq")
-              echo "$label iter=$i upload_MBps=$(awk "BEGIN{printf \"%.1f\", $up_speed/1048576}") download_MBps=$(awk "BEGIN{printf \"%.1f\", $(echo "$down" | cut -d' ' -f1)/1048576}") download_s=$(echo "$down" | cut -d' ' -f2) http=$(echo "$down" | cut -d' ' -f3)" | tee -a /tmp/results.txt
+              echo "$label iter=$i upload_MBps=$(awk "BEGIN{printf \"%.1f\", $SIZE_MB/$t_up}") download_MBps=$(awk "BEGIN{printf \"%.1f\", $(echo "$down" | cut -d' ' -f1)/1048576}") download_s=$(echo "$down" | cut -d' ' -f2) http=$(echo "$down" | cut -d' ' -f3)" | tee -a /tmp/results.txt
             done
             echo "::endgroup::"
           }
